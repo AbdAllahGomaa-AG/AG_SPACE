@@ -1,0 +1,17 @@
+<aside
+  class="sidebar"
+  [ngClass]="{ 'sidebar-mobile-open': mobileMenuOpen() }"
+  aria-label="Sidebar navigation"
+>
+  <nav class="sidebar-nav">
+    @for (navigationLink of navigationLinks; track navigationLink.label) {
+      <p-button
+        styleClass="sidebar-link"
+        severity="secondary"
+        variant="text"
+        [label]="navigationLink.label"
+        [icon]="navigationLink.icon"
+      />
+    }
+  </nav>
+</aside>

@@ -1,0 +1,13 @@
+<p-toolbar styleClass="top-navbar">
+  <ng-template #start>
+    <p-button
+      icon="pi pi-bars"
+      severity="secondary"
+      variant="text"
+      [rounded]="true"
+      ariaLabel="Toggle navigation menu"
+      (onClick)="onMenuToggle()"
+    />
+    <span class="app-title">AG Space Dashboard</span>
+  </ng-template>
+</p-toolbar>

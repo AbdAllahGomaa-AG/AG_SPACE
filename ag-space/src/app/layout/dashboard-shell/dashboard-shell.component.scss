@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+.dashboard-shell {
+  min-height: 100vh;
+  background: var(--p-surface-ground);
+}
+
+.dashboard-layout {
+  display: flex;
+  min-height: calc(100vh - 3.75rem);
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 1rem;
+}
+
+.content-card {
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 0.75rem;
+  background: var(--p-content-background);
+  padding: 1rem;
+}
+
+.content-card h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.content-card p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    width: 100%;
+  }
+
+  .dashboard-content-overlay {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}

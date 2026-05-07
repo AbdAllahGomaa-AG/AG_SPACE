@@ -1,0 +1,18 @@
+<div class="dashboard-shell">
+  <app-top-navbar (menuToggleClicked)="toggleMobileMenu()" />
+
+  <div class="dashboard-layout">
+    <app-side-navigation [mobileMenuOpen]="mobileMenuOpen()" />
+
+    <main
+      class="dashboard-content"
+      [ngClass]="{ 'dashboard-content-overlay': mobileMenuOpen() }"
+      aria-live="polite"
+    >
+      <section class="content-card">
+        <h1>Dashboard Content</h1>
+        <p>PrimeNG is configured and ready for feature expansion.</p>
+      </section>
+    </main>
+  </div>
+</div>
