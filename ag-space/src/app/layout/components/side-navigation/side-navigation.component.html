@@ -1,17 +1,69 @@
 <aside
   class="sidebar"
-  [ngClass]="{ 'sidebar-mobile-open': mobileMenuOpen() }"
+  [ngClass]="{
+    'sidebar-collapsed': collapsed(),
+    'sidebar-mobile-open': mobileMenuOpen()
+  }"
   aria-label="Sidebar navigation"
 >
+  <div class="sidebar-header">
+    <span class="sidebar-header-title">Menu</span>
+    <p-button
+      icon="pi pi-times"
+      severity="secondary"
+      variant="text"
+      [rounded]="true"
+      class="sidebar-close-button"
+      ariaLabel="Close menu"
+      (onClick)="onCloseClick()"
+    />
+  </div>
   <nav class="sidebar-nav">
-    @for (navigationLink of navigationLinks; track navigationLink.label) {
-      <p-button
-        styleClass="sidebar-link"
-        severity="secondary"
-        variant="text"
-        [label]="navigationLink.label"
-        [icon]="navigationLink.icon"
-      />
-    }
+    <div class="nav-section">
+      <span class="nav-section-title" [class.hidden]="collapsed()">Main</span>
+      @for (link of mainLinks; track link.label) {
+        <a
+          class="nav-link"
+          [class.active]="link.label === 'Overview'"
+          [attr.aria-current]="link.label === 'Overview' ? 'page' : null"
+          [pTooltip]="collapsed() ? link.label : undefined"
+          tooltipPosition="right"
+          (click)="onNavItemClick()"
+        >
+          <i [class]="link.icon"></i>
+          <span class="nav-link-label" [class.hidden]="collapsed()">{{ link.label }}</span>
+        </a>
+      }
+    </div>
+
+    <div class="nav-section">
+      <span class="nav-section-title" [class.hidden]="collapsed()">Workspace</span>
+      @for (link of workspaceLinks; track link.label) {
+        <a
+          class="nav-link"
+          [pTooltip]="collapsed() ? link.label : undefined"
+          tooltipPosition="right"
+          (click)="onNavItemClick()"
+        >
+          <i [class]="link.icon"></i>
+          <span class="nav-link-label" [class.hidden]="collapsed()">{{ link.label }}</span>
+        </a>
+      }
+    </div>
+
+    <div class="nav-section">
+      <span class="nav-section-title" [class.hidden]="collapsed()">Account</span>
+      @for (link of accountLinks; track link.label) {
+        <a
+          class="nav-link"
+          [pTooltip]="collapsed() ? link.label : undefined"
+          tooltipPosition="right"
+          (click)="onNavItemClick()"
+        >
+          <i [class]="link.icon"></i>
+          <span class="nav-link-label" [class.hidden]="collapsed()">{{ link.label }}</span>
+        </a>
+      }
+    </div>
   </nav>
 </aside>

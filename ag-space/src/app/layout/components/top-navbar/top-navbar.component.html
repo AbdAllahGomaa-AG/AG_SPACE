@@ -1,5 +1,5 @@
-<p-toolbar styleClass="top-navbar">
-  <ng-template #start>
+<header class="top-navbar">
+  <div class="navbar-start">
     <p-button
       icon="pi pi-bars"
       severity="secondary"
@@ -8,6 +8,43 @@
       ariaLabel="Toggle navigation menu"
       (onClick)="onMenuToggle()"
     />
-    <span class="app-title">AG Space Dashboard</span>
-  </ng-template>
-</p-toolbar>
+    <div class="navbar-brand">
+      <span class="workspace-title">Workspace</span>
+      <span class="page-title">Overview</span>
+    </div>
+  </div>
+
+  <div class="navbar-center">
+    <div class="search-container">
+      <i class="pi pi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search..."
+        aria-label="Search"
+      />
+      <span class="search-shortcut">⌘K</span>
+    </div>
+  </div>
+
+  <div class="navbar-end">
+    <p-button
+      [icon]="isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
+      severity="secondary"
+      variant="text"
+      [rounded]="true"
+      ariaLabel="Toggle theme"
+      (onClick)="toggleTheme()"
+    />
+    <p-button
+      icon="pi pi-bell"
+      severity="secondary"
+      variant="text"
+      [rounded]="true"
+      ariaLabel="Notifications"
+    />
+    <div class="profile-avatar">
+      <span class="avatar-initials">AG</span>
+    </div>
+  </div>
+</header>
