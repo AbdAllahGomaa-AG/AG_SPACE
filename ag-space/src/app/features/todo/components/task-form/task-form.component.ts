@@ -101,6 +101,7 @@ export class TaskFormComponent implements OnInit {
     }
 
     if (success) {
+      this.resetForm();
       this.saved.emit();
     }
   }
@@ -111,6 +112,18 @@ export class TaskFormComponent implements OnInit {
 
   isValid(): boolean {
     return this.title.trim().length > 0;
+  }
+
+  resetForm(): void {
+    this.title = '';
+    this.description = '';
+    this.selectedCategory = null;
+    this.priority = 'medium';
+    this.status = 'todo';
+    this.startDate = null;
+    this.dueDate = null;
+    this.newCategoryName = '';
+    this.showAddCategory = false;
   }
 
   async onAddCategory(): Promise<void> {
