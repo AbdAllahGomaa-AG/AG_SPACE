@@ -3,8 +3,8 @@
   <div class="filter-row">
     <!-- Search -->
     <div class="filter-field search-field">
-      <span class="p-input-icon-left w-full">
-        <i class="pi pi-search"></i>
+      <p-iconfield>
+        <p-inputicon class="pi pi-search" />
         <input 
           type="text" 
           pInputText 
@@ -12,7 +12,7 @@
           (ngModelChange)="onSearchChange($event)"
           placeholder="Search tasks..."
           class="w-full">
-      </span>
+      </p-iconfield>
     </div>
 
     <!-- Category Filter -->
@@ -100,7 +100,7 @@
         styleClass="w-full">
       </p-select>
     </div>
-    <p>AG</p>
+
 
     <!-- Status Filter -->
     <div class="filter-field">

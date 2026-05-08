@@ -5,6 +5,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { ConfirmationService } from 'primeng/api';
 import { Category } from '../../models/category.model';
 import { TaskPriority, TaskStatus, PRIORITY_CONFIG, STATUS_CONFIG } from '../../models/task.model';
@@ -18,7 +20,7 @@ interface FilterOption {
 @Component({
   selector: 'app-task-filters',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, SelectModule, ButtonModule, ConfirmDialogModule],
+  imports: [CommonModule, FormsModule, InputTextModule, SelectModule, ButtonModule, ConfirmDialogModule, IconFieldModule, InputIconModule],
   providers: [ConfirmationService],
   templateUrl: './task-filters.component.html',
   styleUrl: './task-filters.component.scss',

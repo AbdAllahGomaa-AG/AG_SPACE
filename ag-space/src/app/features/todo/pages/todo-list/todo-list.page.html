@@ -62,6 +62,7 @@
     [draggable]="false"
     [resizable]="false">
     <app-task-form
+      *ngIf="showTaskForm()"
       [categories]="categories()"
       [taskId]="editingTaskId()"
       (saved)="onCloseForm()"
