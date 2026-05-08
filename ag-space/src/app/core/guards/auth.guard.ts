@@ -10,12 +10,16 @@ export const authGuard: CanActivateFn = async () => {
   const router = inject(Router);
 
   if (authService.isLoading()) {
-    await firstValueFrom(
-      toObservable(authService.isLoading).pipe(
-        filter((loading) => !loading),
-        timeout(5000)
-      )
-    );
+    try {
+      await firstValueFrom(
+        toObservable(authService.isLoading).pipe(
+          filter((loading) => !loading),
+          timeout(10000)
+        )
+      );
+    } catch (error) {
+      console.error('Auth initialization timeout:', error);
+    }
   }
 
   if (authService.isAuthenticated()) {

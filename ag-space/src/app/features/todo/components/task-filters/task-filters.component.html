@@ -15,7 +15,7 @@
     </div>
 
     <!-- Category Filter -->
-    <div class="filter-field">
+    <div class="filter-field category-filter">
       <p-select
         [options]="fullCategoryOptions"
         [(ngModel)]="selectedCategory"
@@ -26,6 +26,42 @@
         [showClear]="true"
         styleClass="w-full">
       </p-select>
+      <p-button
+        type="button"
+        icon="pi pi-plus"
+        severity="secondary"
+        (onClick)="showAddCategory = true"
+        [disabled]="showAddCategory">
+      </p-button>
+
+      <!-- Add Category Inline Form -->
+      <div *ngIf="showAddCategory" class="add-category-form">
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="newCategoryName"
+          name="newCategoryName"
+          placeholder="New category..."
+          class="w-full"
+          (keyup.enter)="onAddCategory()">
+        <div class="add-category-actions">
+          <p-button
+            type="button"
+            label="Cancel"
+            severity="secondary"
+            (onClick)="cancelAddCategory()"
+            size="small">
+          </p-button>
+          <p-button
+            type="button"
+            label="Add"
+            (onClick)="onAddCategory()"
+            [loading]="isAddingCategory"
+            [disabled]="!newCategoryName.trim()"
+            size="small">
+          </p-button>
+        </div>
+      </div>
     </div>
 
     <!-- Priority Filter -->

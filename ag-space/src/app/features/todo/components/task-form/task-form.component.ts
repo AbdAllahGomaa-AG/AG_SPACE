@@ -38,6 +38,11 @@ export class TaskFormComponent implements OnInit {
   startDate: Date | null = null;
   dueDate: Date | null = null;
 
+  // Add category form
+  showAddCategory = false;
+  newCategoryName = '';
+  isAddingCategory = false;
+
   readonly priorityOptions = Object.entries(PRIORITY_CONFIG).map(([value, config]) => ({
     value: value as TaskPriority,
     label: config.label,
@@ -106,6 +111,26 @@ export class TaskFormComponent implements OnInit {
 
   isValid(): boolean {
     return this.title.trim().length > 0;
+  }
+
+  async onAddCategory(): Promise<void> {
+    const name = this.newCategoryName.trim();
+    if (!name) return;
+
+    this.isAddingCategory = true;
+    const category = await this.facade.createCategory(name);
+    this.isAddingCategory = false;
+
+    if (category) {
+      this.selectedCategory = category.id;
+      this.showAddCategory = false;
+      this.newCategoryName = '';
+    }
+  }
+
+  cancelAddCategory(): void {
+    this.showAddCategory = false;
+    this.newCategoryName = '';
   }
 
   hasDateError(): boolean {

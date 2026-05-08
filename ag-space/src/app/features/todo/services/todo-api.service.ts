@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseClientService } from '../../../core/supabase/supabase-client.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { Category, CreateCategoryRequest, UpdateCategoryRequest } from '../models/category.model';
 import { Task, CreateTaskRequest, UpdateTaskRequest, TaskFilter, TaskStatus } from '../models/task.model';
 
@@ -8,6 +9,7 @@ import { Task, CreateTaskRequest, UpdateTaskRequest, TaskFilter, TaskStatus } fr
 })
 export class TodoApiService {
   private readonly supabaseClient = inject(SupabaseClientService);
+  private readonly authService = inject(AuthService);
 
   // ==================== CATEGORY METHODS ====================
 
@@ -24,9 +26,15 @@ export class TodoApiService {
 
   async createCategory(request: CreateCategoryRequest): Promise<{ data: Category | null; error: Error | null }> {
     const client = this.supabaseClient.getClient();
+    const user = this.authService.user();
+
+    if (!user) {
+      return { data: null, error: new Error('User not authenticated') };
+    }
+
     const { data, error } = await client
       .from('categories')
-      .insert(request)
+      .insert({ ...request, user_id: user.id })
       .select()
       .single();
 

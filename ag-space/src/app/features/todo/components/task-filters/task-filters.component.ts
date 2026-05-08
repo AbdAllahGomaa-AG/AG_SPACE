@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -6,6 +6,7 @@ import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { Category } from '../../models/category.model';
 import { TaskPriority, TaskStatus, PRIORITY_CONFIG, STATUS_CONFIG } from '../../models/task.model';
+import { TodoFacade } from '../../services/todo.facade';
 
 interface FilterOption {
   label: string;
@@ -21,15 +22,23 @@ interface FilterOption {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskFiltersComponent {
+  private readonly facade = inject(TodoFacade);
+
   readonly categories = input.required<Category[]>();
 
   readonly filterChange = output<{ search?: string; category_id?: string | null; priority?: TaskPriority; status?: TaskStatus }>();
   readonly clearFilters = output<void>();
+  readonly categoryAdded = output<void>();
 
   search = '';
   selectedCategory: string | null = null;
   selectedPriority: TaskPriority | null = null;
   selectedStatus: TaskStatus | null = null;
+
+  // Add category form
+  showAddCategory = false;
+  newCategoryName = '';
+  isAddingCategory = false;
 
   readonly categoryOptions: FilterOption[] = [
     { label: 'All Categories', value: null },
@@ -98,5 +107,27 @@ export class TaskFiltersComponent {
       priority: this.selectedPriority ?? undefined,
       status: this.selectedStatus ?? undefined,
     });
+  }
+
+  async onAddCategory(): Promise<void> {
+    const name = this.newCategoryName.trim();
+    if (!name) return;
+
+    this.isAddingCategory = true;
+    const category = await this.facade.createCategory(name);
+    this.isAddingCategory = false;
+
+    if (category) {
+      this.selectedCategory = category.id;
+      this.showAddCategory = false;
+      this.newCategoryName = '';
+      this.categoryAdded.emit();
+      this.emitFilterChange();
+    }
+  }
+
+  cancelAddCategory(): void {
+    this.showAddCategory = false;
+    this.newCategoryName = '';
   }
 }

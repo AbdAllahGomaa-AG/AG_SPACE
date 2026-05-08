@@ -20,36 +20,43 @@ export class AuthService {
   private authSubscription: { unsubscribe: () => void } | null = null;
 
   constructor() {
-    this.initializeAuth();
+    this.initializeAuth().catch((error) => {
+      console.error('Failed to initialize auth:', error);
+      this.isLoading.set(false);
+    });
   }
 
   private async initializeAuth(): Promise<void> {
-    const client = this.supabaseClient.getClient();
+    try {
+      const client = this.supabaseClient.getClient();
 
-    this.authSubscription = client.auth.onAuthStateChange(
-      async (event: AuthChangeEvent, session: Session | null) => {
-        this.session.set(session);
-        this.user.set(session?.user ?? null);
+      this.authSubscription = client.auth.onAuthStateChange(
+        async (event: AuthChangeEvent, session: Session | null) => {
+          this.session.set(session);
+          this.user.set(session?.user ?? null);
 
-        if (session?.user) {
-          await this.loadProfile(session.user.id);
-        } else {
-          this.profile.set(null);
+          if (session?.user) {
+            await this.loadProfile(session.user.id);
+          } else {
+            this.profile.set(null);
+          }
+
+          this.isLoading.set(false);
         }
+      ).data.subscription;
 
-        this.isLoading.set(false);
+      const { data: { session } } = await client.auth.getSession();
+      
+      if (session) {
+        this.session.set(session);
+        this.user.set(session.user);
+        await this.loadProfile(session.user.id);
       }
-    ).data.subscription;
-
-    const { data: { session } } = await client.auth.getSession();
-    
-    if (session) {
-      this.session.set(session);
-      this.user.set(session.user);
-      await this.loadProfile(session.user.id);
+    } catch (error) {
+      console.error('Error during auth initialization:', error);
+    } finally {
+      this.isLoading.set(false);
     }
-
-    this.isLoading.set(false);
   }
 
   async loadProfile(userId: string): Promise<void> {
