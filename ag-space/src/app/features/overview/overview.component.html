@@ -1,0 +1,104 @@
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-title">Welcome back, {{ displayName() }}</h1>
+    <p class="hero-subtitle">Here's what's happening with your workspace today.</p>
+  </div>
+  <div class="hero-actions">
+    <p-button
+      label="New Project"
+      icon="pi pi-plus"
+      styleClass="p-button-primary"
+    />
+  </div>
+</section>
+
+<!-- Stats Grid -->
+<section class="stats-grid">
+  @for (stat of stats; track stat.label) {
+    <div class="stat-card">
+      <div class="stat-icon" [style.background]="stat.color">
+        <i [class]="stat.icon"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stat.value }}</span>
+        <span class="stat-label">{{ stat.label }}</span>
+      </div>
+      <div class="stat-trend" [class.positive]="stat.trend > 0" [class.negative]="stat.trend < 0">
+        <i [class]="stat.trend > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+        <span>{{ abs(stat.trend) }}%</span>
+      </div>
+    </div>
+  }
+</section>
+
+<!-- Content Grid -->
+<section class="content-grid">
+  <!-- Recent Tasks -->
+  <div class="content-card">
+    <div class="card-header">
+      <h2 class="card-title">Recent Tasks</h2>
+      <p-button
+        icon="pi pi-ellipsis-h"
+        severity="secondary"
+        variant="text"
+        [rounded]="true"
+      />
+    </div>
+    <div class="task-list">
+      @for (task of recentTasks; track task.title) {
+        <div class="task-item">
+          <div class="task-status" [class.completed]="task.completed"></div>
+          <div class="task-content">
+            <span class="task-title">{{ task.title }}</span>
+            <span class="task-meta">{{ task.project }} · {{ task.dueDate }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="content-card">
+    <div class="card-header">
+      <h2 class="card-title">Quick Actions</h2>
+    </div>
+    <div class="quick-actions">
+      <button class="quick-action-btn">
+        <i class="pi pi-plus"></i>
+        <span>Create Task</span>
+      </button>
+      <button class="quick-action-btn">
+        <i class="pi pi-upload"></i>
+        <span>Upload File</span>
+      </button>
+      <button class="quick-action-btn">
+        <i class="pi pi-user-plus"></i>
+        <span>Invite Member</span>
+      </button>
+      <button class="quick-action-btn">
+        <i class="pi pi-calendar-plus"></i>
+        <span>Schedule Meeting</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Today Overview -->
+  <div class="content-card full-width">
+    <div class="card-header">
+      <h2 class="card-title">Today Overview</h2>
+      <span class="card-badge">{{ todayItems.length }} items</span>
+    </div>
+    <div class="today-list">
+      @for (item of todayItems; track item.title) {
+        <div class="today-item">
+          <div class="today-time">{{ item.time }}</div>
+          <div class="today-content">
+            <span class="today-title">{{ item.title }}</span>
+            <span class="today-type">{{ item.type }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
