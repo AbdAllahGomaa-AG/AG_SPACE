@@ -18,10 +18,10 @@ export class PriorityBadgeComponent {
 
   getIcon(): string {
     switch (this.priority()) {
-      case 'URGENT': return 'pi pi-exclamation-triangle';
-      case 'HIGH': return 'pi pi-angle-double-up';
-      case 'MEDIUM': return 'pi pi-angle-up';
-      case 'LOW': return 'pi pi-angle-down';
+      case 'urgent': return 'pi pi-exclamation-triangle';
+      case 'high': return 'pi pi-angle-double-up';
+      case 'medium': return 'pi pi-angle-up';
+      case 'low': return 'pi pi-angle-down';
       default: return 'pi pi-minus';
     }
   }

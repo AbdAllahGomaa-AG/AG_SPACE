@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, computed } from '@angular/core';
-import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../core/auth/auth.service';
 
@@ -27,7 +26,7 @@ interface TodayItem {
 @Component({
   selector: 'app-overview',
   standalone: true,
-  imports: [NgClass, ButtonModule],
+  imports: [ButtonModule],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
