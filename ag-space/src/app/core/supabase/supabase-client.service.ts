@@ -19,14 +19,10 @@ export class SupabaseClientService {
 
       this.client = createClient(url, publishableKey, {
         auth: {
-          storage: {
-            getItem: () => null,
-            setItem: () => {},
-            removeItem: () => {},
-          },
+          storage: window.sessionStorage,
           autoRefreshToken: true,
-          persistSession: false,
-          detectSessionInUrl: false,
+          persistSession: true,
+          detectSessionInUrl: true,
         },
       });
     }
