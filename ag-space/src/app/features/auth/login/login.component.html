@@ -1,0 +1,98 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-logo">
+        <i class="pi pi-bolt"></i>
+      </div>
+      <h1 class="login-title">Welcome Back</h1>
+      <p class="login-subtitle">Sign in to your account to continue</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="error-banner">
+        <i class="pi pi-exclamation-circle"></i>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <form class="login-form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-field">
+        <label for="email" class="form-label">Email Address</label>
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-envelope"></i>
+          <input
+            pInputText
+            id="email"
+            type="email"
+            class="w-full"
+            [class.p-invalid]="emailError()"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event); clearFieldError('email')"
+            name="email"
+            placeholder="Enter your email"
+            autocomplete="email"
+            aria-describedby="email-error"
+          />
+        </span>
+        @if (emailError()) {
+          <small id="email-error" class="field-error">{{ emailError() }}</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="password" class="form-label">Password</label>
+        <div class="password-wrapper">
+          <span class="p-input-icon-left password-input-wrapper">
+            <i class="pi pi-lock"></i>
+            <input
+              pInputText
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              class="w-full password-input"
+              [class.p-invalid]="passwordError()"
+              [ngModel]="password()"
+              (ngModelChange)="password.set($event); clearFieldError('password')"
+              name="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              aria-describedby="password-error"
+            />
+          </span>
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+          >
+            <i [class]="showPassword() ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+          </button>
+        </div>
+        @if (passwordError()) {
+          <small id="password-error" class="field-error">{{ passwordError() }}</small>
+        }
+      </div>
+
+      <p-button
+        type="submit"
+        label="Sign In"
+        styleClass="login-button"
+        [loading]="isLoading()"
+        [disabled]="isLoading()"
+      />
+    </form>
+
+    <div class="login-footer">
+      <p class="footer-text">Secure authentication powered by Supabase</p>
+    </div>
+  </div>
+
+  <div class="login-decoration">
+    <div class="decoration-content">
+      <div class="decoration-icon">
+        <i class="pi pi-shield"></i>
+      </div>
+      <h2 class="decoration-title">AG Space</h2>
+      <p class="decoration-text">Your workspace for productivity and collaboration</p>
+    </div>
+  </div>
+</div>

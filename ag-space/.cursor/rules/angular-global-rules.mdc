@@ -1,0 +1,299 @@
+---
+alwaysApply: true
+description: Main Angular project constitution and coding rules for this repository
+---
+
+# Angular Project Constitution
+
+PASTE_YOUR_RULES_HERE
+# Angular Expert — Global Rules
+
+## Stack
+- Angular 17+ with Standalone Components only (no NgModule)
+- Signals for state management (signal, computed, effect)
+- inject() pattern instead of constructor injection
+- PrimeNG for UI components
+- TailwindCSS for utility styling
+- Reactive Forms (FormBuilder, FormGroup, FormControl)
+
+## Angular Patterns
+- Always standalone: true in @Component — never NgModule
+- inject() not constructor injection
+- Signals for local state, not plain class properties
+- FormBuilder via inject(FormBuilder)
+- Template control flow: @if, @for, @switch (never *ngIf, *ngFor)
+- OnPush change detection for all components
+- Services: providedIn: 'root' unless feature-scoped
+- Typed FormGroup<{...}> always
+
+## Clean Code
+- Functions: single-purpose, max ~20 lines
+- Names: meaningful, no abbreviations, no generic names (data, temp, item)
+- No magic numbers — use named constants
+- No dead code, no commented-out blocks
+- Max component file: ~150 lines — extract if larger
+- One level of abstraction per function
+
+## Architecture — SOLID & Design Patterns
+- Single Responsibility: each service/component does one thing
+- Open/Closed: extend via new classes, not by modifying existing
+- Smart/Dumb (Container/Presentational) pattern:
+  - Smart: logic, data fetching, state management
+  - Dumb: @Input() / @Output() only, zero business logic
+- Facade pattern for complex features: one service as public API
+- Repository pattern for data access: isolate all HTTP in repos
+- Depend on abstractions (interfaces/tokens), not concrete classes
+
+## Naming Conventions
+Files (kebab-case):
+  user-profile.component.ts
+  auth.service.ts
+  user.repository.ts
+  admin.facade.ts
+  is-logged-in.guard.ts
+
+Classes (PascalCase):
+  UserProfileComponent / AuthService / UserRepository / AdminFacade
+
+Interfaces: descriptive noun
+  UserModel | UserResponse | IUser
+
+Signals: camelCase
+  const isLoading = signal(false)
+  const currentUser = signal(null)
+
+Constants: SCREAMING_SNAKE_CASE
+  const MAX_RETRY_COUNT = 3
+
+Enums: PascalCase
+  enum UserRole { Admin, Editor, Viewer }
+
+## State Management — Decision Rules
+Hierarchy — never deviate without asking:
+1. Local signal        → UI-only state (isOpen, isLoading, activeTab)
+2. Service + signal    → shared state between sibling components
+3. Facade + signal     → complex feature with multiple services
+4. Never NgRx/Akita    → unless explicitly requested and justified
+
+Rules:
+- One source of truth: never duplicate state across services
+- Derived state: always computed(), never recalculate manually
+- Side effects: always in effect() or explicit methods, never in template
+- If unsure which level → ask before implementing
+
+## API Contract — REST
+- Assume REST unless told otherwise — ask before using anything else
+- All HTTP calls live in Repository classes only (never in components)
+- Naming: {Domain}Repository (UserRepository, AuthRepository)
+- Methods: getAll(), getById(id), create(dto), update(id, dto), delete(id)
+- Always type request and response — never use `any`
+- Pagination: { data: T[], total: number, page: number, pageSize: number }
+- Loading states: signal isLoading in the calling service
+- Base URL: always from environment.apiUrl — never hardcoded
+- Interceptors: auth token + global error handling only
+
+## File & Template Rules
+- No inline templates — always templateUrl (.html file)
+- No inline styles — always styleUrl (.scss file)
+- No inline logic in templates — extract to methods or computed signals
+
+## Responsive & Mobile First
+- Write mobile-first: base = mobile, then sm: md: lg: xl:
+- No fixed pixel widths on containers — use %, max-w, or fluid grids
+- Touch targets: minimum 44x44px for all interactive elements
+- Test at: 320px / 768px / 1024px / 1440px
+
+## Dark Mode
+- Dark mode is user-controlled (toggle, not system-level)
+- Use Tailwind dark: prefix for all color utilities
+- Use PrimeNG theme switching for component theming
+- Never hardcode light-only colors (#fff, white, #000, black)
+- CSS variables for custom colors with .dark class override
+
+## Internationalization — Arabic & English
+- Language is user-controlled: Arabic (RTL) or English (LTR)
+- Use ngx-translate for all displayed text — no hardcoded strings
+- Set [dir] and [lang] dynamically on root element
+- RTL: use Tailwind rtl: prefix — no CSS hacks
+- PrimeNG: always pass [dir] to p-* components
+- All icons, layouts, and spacing must flip correctly in RTL
+- Date/number formatting must respect active locale
+
+## Accessibility (a11y)
+- Semantic HTML: , , , , 
+- Every image: alt text (or alt="" if decorative)
+- Every form field:  or aria-label
+- Color contrast: min 4.5:1 normal text, 3:1 large text
+- All interactive elements must be keyboard-focusable
+- Dynamic content: aria-live, aria-expanded, aria-controls
+- No click handlers on non-interactive elements (div, span)
+- PrimeNG: always pass ariaLabel and accessibility props
+
+## Performance
+- Lazy load all feature routes — no eager loading unless critical
+- Always use track in @for: @for (item of items; track item.id)
+- Avoid heavy computed() chains — keep derived signals simple
+- No unnecessary subscriptions — use async pipe or takeUntilDestroyed()
+- Images: use NgOptimizedImage directive always
+- Avoid logic in template expressions — precompute in component
+- No barrel files (index.ts) in large feature folders
+
+## Error Handling
+- All HTTP calls must handle errors — never silent failures
+- Global HttpInterceptor for: 401 (redirect login), 500 (show toast)
+- User-facing errors: PrimeNG Toast or inline Message component
+- Never expose raw API error messages to the UI
+- Log errors in dev only — use environment.production flag
+- Forms: show validation errors inline next to the field
+
+## Security
+- No direct DOM manipulation — use Renderer2 if needed
+- Never use innerHTML without DomSanitizer
+- No sensitive data in localStorage
+- No hardcoded API keys or secrets in source code
+- Never bypass Angular's built-in XSS protection
+
+## Folder Structure — Domain-Based
+src/app/
+├── core/              # interceptors, guards, singleton services
+├── shared/            # reusable components, pipes, directives
+├── features/
+│   └── {domain}/
+│       ├── components/
+│       ├── services/
+│       ├── repositories/
+│       ├── models/
+│       └── {domain}.routes.ts
+└── app.routes.ts
+
+- Feature folders = lazy-loaded routes
+- No cross-feature imports — go through core/ or shared/
+
+## Git & Commits — Conventional Commits
+Format: type(scope): description
+Types: feat | fix | refactor | style | test | chore | docs | perf
+
+Examples:
+  feat(auth): add Google login
+  fix(dashboard): correct filter total calculation
+  perf(table): add track to user list
+
+Rules:
+- Scope = domain/feature name
+- Description: imperative, lowercase, no period, max 72 chars
+
+## Testing — Karma + Jasmine
+- Test file: same folder, {name}.spec.ts
+- Unit test all services, repositories, facades
+- Mock all HTTP — never hit real API in tests
+- Mock services: jasmine.createSpyObj
+- Coverage targets: services 80%, components 60%
+- Test name: should + expected behavior
+
+## Pre-commit Checklist — REQUIRED
+Before showing any code, verify every item silently:
+
+Code quality:
+  [ ] Function does one thing only
+  [ ] No magic numbers — named constants used
+  [ ] No any type used anywhere
+  [ ] No unused variables, imports, or methods
+  [ ] File under ~150 lines — extracted if larger
+
+Angular-specific:
+  [ ] standalone: true present
+  [ ] inject() used not constructor
+  [ ] @if/@for used not *ngIf/*ngFor
+  [ ] OnPush set on component
+  [ ] No logic in template expressions
+
+Correctness:
+  [ ] Edge cases handled (empty array, null, undefined)
+  [ ] Error state handled — not just happy path
+  [ ] Loading state managed properly
+  [ ] No hardcoded strings (use i18n keys)
+  [ ] No hardcoded colors (use CSS variables or Tailwind)
+
+If any item fails → fix it before showing the code, silently.
+Never show code that fails this checklist.
+
+## Self-QA Rules — Before Delivering
+After writing any UI code, mentally test these scenarios:
+
+Responsive:
+  [ ] Works at 320px (small mobile)
+  [ ] Works at 768px (tablet)
+  [ ] Works at 1440px (desktop)
+  [ ] No horizontal scroll on mobile
+
+Cross-browser:
+  [ ] No CSS that breaks in Safari (gap in flex, etc.)
+  [ ] No JS API that's Chrome-only
+
+RTL/LTR:
+  [ ] Layout flips correctly in Arabic (RTL)
+  [ ] Icons direction-aware
+  [ ] Text alignment correct in both directions
+
+Accessibility:
+  [ ] All interactive elements reachable by keyboard (Tab key)
+  [ ] Focus indicator visible on all focusable elements
+  [ ] Form fields have labels
+  [ ] Error messages announced to screen readers (aria-live)
+
+Dark mode:
+  [ ] No hardcoded light colors visible in dark mode
+  [ ] Contrast sufficient in both modes
+
+If any check fails → fix before delivering, silently.
+
+## Technical Debt Management
+When writing code, always flag technical debt explicitly:
+
+Flag format — add this comment when applicable:
+  // TECH-DEBT: [reason] — [what needs to be done later]
+  // Example: // TECH-DEBT: hardcoded limit, move to config when API supports it
+
+Rules:
+- Never do a workaround without flagging it as TECH-DEBT
+- If a quick fix introduces debt, say so before writing it:
+  "هأعمل الحل ده دلوقتي بس هو technical debt — عايزني أوضح إيه اللازم يتعمل بعدين؟"
+- Never accumulate debt silently
+- If refactoring is needed but out of scope, flag it:
+  "الكود ده محتاج refactor بس مش في scope الطلب — هضيف TECH-DEBT comment"
+- Priority levels in comments:
+  // TECH-DEBT[HIGH]: affects scalability or security
+  // TECH-DEBT[MED]: affects maintainability
+  // TECH-DEBT[LOW]: nice to have improvement
+
+## Code Review Mindset
+Before showing code, ask internally:
+- Would a senior dev approve this without comments?
+- Does it follow all rules in this file?
+- Is there a simpler approach?
+- Does it introduce security or performance issues?
+Fix any issue before showing — never wait for feedback on obvious problems.
+
+## Documentation
+- Public service methods: JSDoc only if behavior is non-obvious
+- No JSDoc on self-explanatory methods (getUsers, deleteItem)
+- Comments allowed only for: why a decision was made, not what it does
+- No inline comments explaining what the code does
+
+## Modification Rules — CRITICAL
+- Only modify what was explicitly requested
+- Never rewrite an entire file to fix one thing
+- Show only the changed function/block, not the whole file
+- Never add unrequested features, refactoring, or renaming
+
+## Output Rules
+- No "// Added by AI", "// Updated", "// TODO" comments
+- No placeholders like "// rest of code here"
+- Show exact location: "// In ngOnInit:" or "// Replace submitForm:"
+
+## Asking Before Acting
+- Change affects multiple files → list and ask first
+- Architectural decision → present 2 options and ask
+- Ambiguous requirement → ask one focused question
+- State level unclear → ask which level (local/service/facade)
+- Never assume — always ask if touching structure or patterns
