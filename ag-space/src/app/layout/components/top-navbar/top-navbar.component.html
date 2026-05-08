@@ -43,8 +43,19 @@
       [rounded]="true"
       ariaLabel="Notifications"
     />
-    <div class="profile-avatar">
-      <span class="avatar-initials">AG</span>
+    <div class="profile-section">
+      <div class="profile-avatar" [pTooltip]="profile()?.full_name ?? 'User'" tooltipPosition="bottom">
+        <span class="avatar-initials">{{ userInitials() }}</span>
+      </div>
+      <p-button
+        icon="pi pi-sign-out"
+        severity="secondary"
+        variant="text"
+        [rounded]="true"
+        ariaLabel="Sign out"
+        (onClick)="onLogout()"
+        class="logout-button"
+      />
     </div>
   </div>
 </header>

@@ -100,13 +100,19 @@
   gap: 0.25rem;
 }
 
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+}
+
 .profile-avatar {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 2rem;
   height: 2rem;
-  margin-left: 0.5rem;
   background: linear-gradient(135deg, var(--primary-200), var(--primary-100));
   border-radius: 50%;
   cursor: pointer;
@@ -121,6 +127,17 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: white;
+}
+
+::ng-deep .logout-button {
+  .p-button {
+    color: var(--text-muted);
+
+    &:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+  }
 }
 
 /* Tablet styles */
@@ -152,10 +169,14 @@
     gap: 0.125rem;
   }
 
+  .profile-section {
+    gap: 0.125rem;
+    margin-left: 0.25rem;
+  }
+
   .profile-avatar {
     width: 1.75rem;
     height: 1.75rem;
-    margin-left: 0.25rem;
   }
 }
 

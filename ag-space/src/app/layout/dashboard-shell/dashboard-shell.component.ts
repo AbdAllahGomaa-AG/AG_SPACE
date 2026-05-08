@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject, computed } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { TopNavbarComponent } from '../components/top-navbar/top-navbar.component';
 import { SideNavigationComponent } from '../components/side-navigation/side-navigation.component';
+import { AuthService } from '../../core/auth/auth.service';
 
 interface Stat {
   readonly label: string;
@@ -34,8 +35,16 @@ interface TodayItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardShellComponent {
+  private readonly authService = inject(AuthService);
+
   readonly sidebarCollapsed = signal(false);
   readonly mobileMenuOpen = signal(false);
+
+  readonly profile = this.authService.profile;
+  readonly displayName = computed(() => {
+    const profile = this.profile();
+    return profile?.full_name ?? 'User';
+  });
 
   readonly stats: Stat[] = [
     { label: 'Active Projects', value: '12', icon: 'pi pi-folder', color: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', trend: 8 },
