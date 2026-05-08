@@ -13,6 +13,16 @@ export const routes: Routes = [
     path: '',
     component: DashboardShellComponent,
     canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/overview/overview.component').then((m) => m.OverviewComponent),
+      },
+      {
+        path: 'todos',
+        loadChildren: () => import('./features/todo/todo.routes').then((m) => m.TODO_ROUTES),
+      },
+    ],
   },
   {
     path: '**',

@@ -1,0 +1,158 @@
+<form class="task-form" (ngSubmit)="onSubmit()">
+  <!-- Title -->
+  <div class="form-field">
+    <label for="title">Title *</label>
+    <input
+      id="title"
+      type="text"
+      pInputText
+      [(ngModel)]="title"
+      name="title"
+      placeholder="What needs to be done?"
+      required
+      class="w-full">
+  </div>
+
+  <!-- Description -->
+  <div class="form-field">
+    <label for="description">Description</label>
+    <textarea
+      id="description"
+      pTextarea
+      [(ngModel)]="description"
+      name="description"
+      placeholder="Add more details..."
+      rows="3"
+      class="w-full">
+    </textarea>
+  </div>
+
+  <!-- Category & Priority Row -->
+  <div class="form-row">
+    <div class="form-field">
+      <label for="category">Category</label>
+      <div class="category-field">
+        <p-select
+          id="category"
+          [options]="categoryOptions()"
+          [(ngModel)]="selectedCategory"
+          name="category"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select category"
+          [showClear]="true"
+          class="w-full">
+        </p-select>
+        <p-button
+          type="button"
+          icon="pi pi-plus"
+          severity="secondary"
+          (onClick)="showAddCategory = true"
+          [disabled]="isLoading() || showAddCategory">
+        </p-button>
+      </div>
+
+      <!-- Add Category Inline Form -->
+      <div *ngIf="showAddCategory" class="add-category-form">
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="newCategoryName"
+          name="newCategoryName"
+          placeholder="Category name..."
+          class="w-full"
+          (keyup.enter)="onAddCategory()">
+        <div class="add-category-actions">
+          <p-button
+            type="button"
+            label="Cancel"
+            severity="secondary"
+            (onClick)="cancelAddCategory()"
+            size="small">
+          </p-button>
+          <p-button
+            type="button"
+            label="Add"
+            (onClick)="onAddCategory()"
+            [loading]="isAddingCategory"
+            [disabled]="!newCategoryName.trim()"
+            size="small">
+          </p-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="priority">Priority</label>
+      <p-select
+        id="priority"
+        [options]="priorityOptions"
+        [(ngModel)]="priority"
+        name="priority"
+        optionLabel="label"
+        optionValue="value"
+        class="w-full">
+      </p-select>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="form-field">
+    <label for="status">Status</label>
+    <p-select
+      id="status"
+      [options]="statusOptions"
+      [(ngModel)]="status"
+      name="status"
+      optionLabel="label"
+      optionValue="value"
+      class="w-full">
+    </p-select>
+  </div>
+
+  <!-- Dates Row -->
+  <div class="form-row">
+    <div class="form-field">
+      <label for="startDate">Start Date</label>
+      <p-datepicker
+        id="startDate"
+        [(ngModel)]="startDate"
+        name="startDate"
+        [showIcon]="true"
+        placeholder="Select start date"
+        class="w-full">
+      </p-datepicker>
+    </div>
+
+    <div class="form-field">
+      <label for="dueDate">Due Date</label>
+      <p-datepicker
+        id="dueDate"
+        [(ngModel)]="dueDate"
+        name="dueDate"
+        [showIcon]="true"
+        placeholder="Select due date"
+        class="w-full"
+        [ngClass]="{ 'ng-invalid ng-dirty': hasDateError() }">
+      </p-datepicker>
+      <small *ngIf="hasDateError()" class="error-message">Due date must be after start date</small>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="form-actions">
+    <p-button
+      type="button"
+      label="Cancel"
+      severity="secondary"
+      (onClick)="onCancel()"
+      [disabled]="isLoading()">
+    </p-button>
+    <p-button
+      type="submit"
+      [label]="isEditing() ? 'Update Task' : 'Create Task'"
+      [loading]="isLoading()"
+      [disabled]="!isValid() || hasDateError()">
+    </p-button>
+  </div>
+</form>

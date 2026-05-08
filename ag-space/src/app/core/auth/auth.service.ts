@@ -15,6 +15,7 @@ export class AuthService {
   readonly session = signal<Session | null>(null);
   readonly profile = signal<Profile | null>(null);
   readonly isLoading = signal(true);
+  readonly isAuthInitialized = signal(false);
   readonly isAuthenticated = computed(() => !!this.user());
 
   private authSubscription: { unsubscribe: () => void } | null = null;
@@ -24,32 +25,45 @@ export class AuthService {
   }
 
   private async initializeAuth(): Promise<void> {
-    const client = this.supabaseClient.getClient();
-
-    this.authSubscription = client.auth.onAuthStateChange(
-      async (event: AuthChangeEvent, session: Session | null) => {
+    try {
+      const client = this.supabaseClient.getClient();
+      
+      // First, get current session
+      const { data: { session } } = await client.auth.getSession();
+      
+      if (session) {
         this.session.set(session);
-        this.user.set(session?.user ?? null);
-
-        if (session?.user) {
-          await this.loadProfile(session.user.id);
-        } else {
-          this.profile.set(null);
-        }
-
-        this.isLoading.set(false);
+        this.user.set(session.user);
+        await this.loadProfile(session.user.id);
       }
-    ).data.subscription;
+      
+      // Then subscribe to auth state changes for future updates
+      this.authSubscription = client.auth.onAuthStateChange(
+        async (event: AuthChangeEvent, session: Session | null) => {
+          // Skip INITIAL_SESSION since we already handled it above
+          if (event === 'INITIAL_SESSION') return;
+          
+          this.session.set(session);
+          this.user.set(session?.user ?? null);
 
-    const { data: { session } } = await client.auth.getSession();
-    
-    if (session) {
-      this.session.set(session);
-      this.user.set(session.user);
-      await this.loadProfile(session.user.id);
+          if (session?.user) {
+            await this.loadProfile(session.user.id);
+          } else {
+            this.profile.set(null);
+          }
+        }
+      ).data.subscription;
+      
+      // Mark initialization as complete
+      this.isAuthInitialized.set(true);
+      this.isLoading.set(false);
+      
+    } catch (error) {
+      console.error('Error during auth initialization:', error);
+      // Still mark as initialized to prevent infinite loading
+      this.isAuthInitialized.set(true);
+      this.isLoading.set(false);
     }
-
-    this.isLoading.set(false);
   }
 
   async loadProfile(userId: string): Promise<void> {
@@ -107,15 +121,21 @@ export class AuthService {
   async signOut(): Promise<void> {
     try {
       const client = this.supabaseClient.getClient();
+      
+      // Sign out from Supabase - this clears the session from localStorage
       await client.auth.signOut();
 
+      // Clear local auth state
       this.session.set(null);
       this.user.set(null);
       this.profile.set(null);
 
+      // Navigate to login
       await this.router.navigate(['/login']);
     } catch (error) {
       console.error('Error signing out:', error);
+      
+      // Even if Supabase signOut fails, clear local state and redirect
       this.session.set(null);
       this.user.set(null);
       this.profile.set(null);

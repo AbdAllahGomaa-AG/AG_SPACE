@@ -1,0 +1,25 @@
+<div class="todo-view-page">
+  <p-toast></p-toast>
+
+  <header class="page-header">
+    <h1 class="page-title">Overdue</h1>
+    <p class="page-subtitle">Tasks past their due date</p>
+  </header>
+
+  <div *ngIf="error()" class="error-state">
+    <i class="pi pi-exclamation-circle error-icon"></i>
+    <p class="error-message">{{ error() }}</p>
+    <p-button label="Retry" icon="pi pi-refresh" (onClick)="loadData()"></p-button>
+  </div>
+
+  <app-task-list
+    *ngIf="!error()"
+    [tasks]="tasks()"
+    [categories]="categories()"
+    [isLoading]="isLoading()"
+    emptyMessage="No overdue tasks. Great job staying on track!"
+    (completeTask)="onCompleteTask($event)"
+    (reopenTask)="onReopenTask($event)"
+    (deleteTask)="onDeleteTask($event)">
+  </app-task-list>
+</div>

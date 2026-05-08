@@ -1,0 +1,210 @@
+.task-card {
+  position: relative;
+  background: linear-gradient(135deg, var(--surface-100) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.02) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+}
+
+.task-done {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.005) 100%);
+  border-color: transparent;
+  opacity: 0.5;
+
+  &:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+    transform: none;
+    box-shadow: none;
+    opacity: 0.6;
+
+    &::before {
+      opacity: 0;
+    }
+  }
+
+  .task-title {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+}
+
+.task-overdue:not(.task-done) {
+  border-left: 4px solid #ef4444;
+  
+  &::before {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+  }
+
+  &:hover {
+    border-color: rgba(239, 68, 68, 0.4);
+    box-shadow: 0 12px 40px rgba(239, 68, 68, 0.15);
+  }
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.task-checkbox-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+
+  :deep(.p-checkbox) {
+    margin-top: 0.25rem;
+  }
+}
+
+.task-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  transition: color 0.2s ease;
+}
+
+.task-card:hover .task-title {
+  color: var(--primary-400);
+}
+
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+}
+
+.task-card:hover .task-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.task-description {
+  margin: -0.5rem 0 1.5rem 2.75rem;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  position: relative;
+  z-index: 1;
+}
+
+.task-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+  margin-left: 2.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.task-badges {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.task-due-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 0.875rem;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-default);
+  }
+
+  &.overdue {
+    color: #ef4444;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%);
+    border-color: rgba(239, 68, 68, 0.3);
+    font-weight: 700;
+
+    &:hover {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .task-card {
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .task-meta {
+    margin-left: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .task-description {
+    margin-left: 0;
+  }
+
+  .task-actions {
+    opacity: 1;
+    transform: none;
+  }
+
+  .task-title {
+    font-size: 1.125rem;
+  }
+}

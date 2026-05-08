@@ -1,0 +1,9 @@
+<span 
+  class="priority-badge"
+  [class]="'priority-' + priority().toLowerCase()"
+  [style.color]="config().color"
+  [style.border-color]="config().color + '40'"
+  [style.background-color]="config().color + '15'">
+  <i [class]="getIcon()"></i>
+  {{ config().label }}
+</span>

@@ -1,0 +1,130 @@
+<div class="task-filters">
+  <p-confirmDialog></p-confirmDialog>
+  <div class="filter-row">
+    <!-- Search -->
+    <div class="filter-field search-field">
+      <span class="p-input-icon-left w-full">
+        <i class="pi pi-search"></i>
+        <input 
+          type="text" 
+          pInputText 
+          [(ngModel)]="search" 
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Search tasks..."
+          class="w-full">
+      </span>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="filter-field category-filter">
+      <p-select
+        [options]="fullCategoryOptions"
+        [(ngModel)]="selectedCategory"
+        (ngModelChange)="onCategoryChange($event)"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Category"
+        [showClear]="true"
+        appendTo="body"
+        styleClass="w-full">
+      </p-select>
+      <p-button
+        type="button"
+        icon="pi pi-plus"
+        severity="secondary"
+        (onClick)="showAddCategory = true"
+        [disabled]="showAddCategory"
+        pTooltip="Add category"
+        tooltipPosition="top">
+      </p-button>
+      <p-button
+        *ngIf="selectedCategory"
+        type="button"
+        icon="pi pi-times"
+        severity="secondary"
+        (onClick)="onClearCategory()"
+        pTooltip="Clear category"
+        tooltipPosition="top">
+      </p-button>
+      <p-button
+        *ngIf="canDeleteCategory()"
+        type="button"
+        icon="pi pi-trash"
+        severity="danger"
+        (onClick)="onDeleteCategory()"
+        pTooltip="Delete category"
+        tooltipPosition="top">
+      </p-button>
+
+      <!-- Add Category Inline Form -->
+      <div *ngIf="showAddCategory" class="add-category-form">
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="newCategoryName"
+          name="newCategoryName"
+          placeholder="New category..."
+          class="w-full"
+          (keyup.enter)="onAddCategory()">
+        <div class="add-category-actions">
+          <p-button
+            type="button"
+            label="Cancel"
+            severity="secondary"
+            (onClick)="cancelAddCategory()"
+            size="small">
+          </p-button>
+          <p-button
+            type="button"
+            label="Add"
+            (onClick)="onAddCategory()"
+            [loading]="isAddingCategory"
+            [disabled]="!newCategoryName.trim()"
+            size="small">
+          </p-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Priority Filter -->
+    <div class="filter-field">
+      <p-select
+        [options]="priorityOptions"
+        [(ngModel)]="selectedPriority"
+        (ngModelChange)="onPriorityChange($event)"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Priority"
+        [showClear]="true"
+        appendTo="body"
+        styleClass="w-full">
+      </p-select>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="filter-field">
+      <p-select
+        [options]="statusOptions"
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="onStatusChange($event)"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Status"
+        [showClear]="true"
+        appendTo="body"
+        styleClass="w-full">
+      </p-select>
+    </div>
+
+    <!-- Clear Button -->
+    <div class="filter-field" *ngIf="hasActiveFilters()">
+      <p-button
+        icon="pi pi-times"
+        severity="secondary"
+        (onClick)="onClear()"
+        pTooltip="Clear filters"
+        tooltipPosition="top">
+      </p-button>
+    </div>
+  </div>
+</div>
