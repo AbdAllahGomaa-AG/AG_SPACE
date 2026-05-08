@@ -30,7 +30,7 @@
 .category-filter {
   display: flex;
   gap: 0.5rem;
-  align-items: flex-start;
+  align-items: center;
   position: relative;
   flex: 1 1 auto;
   min-width: 200px;
@@ -75,35 +75,83 @@
   flex: 1 1 280px;
   min-width: 200px;
 
+  p-iconfield {
+    width: 100%;
+  }
+
   :deep(.p-inputtext) {
-    background: transparent;
-    border-color: transparent;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(99, 102, 241, 0.2);
     padding-left: 2.75rem;
+    height: 42px;
     font-size: 0.9375rem;
     font-weight: 500;
-    transition: all 0.2s ease;
+    border-radius: var(--radius-lg);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      background: rgba(255, 255, 255, 0.05);
+    }
 
     &:focus {
-      border-color: rgba(99, 102, 241, 0.3);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-      background: rgba(255, 255, 255, 0.02);
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+      background: rgba(255, 255, 255, 0.04);
     }
 
     &::placeholder {
       color: var(--text-muted);
+      opacity: 0.7;
       font-weight: 400;
     }
   }
 
-  :deep(.p-input-icon-left) {
-    i {
-      color: var(--text-muted);
-      transition: color 0.2s ease;
+  :deep(.p-inputicon) {
+    color: var(--text-muted);
+    left: 1rem;
+    font-size: 1rem;
+    transition: color 0.2s ease;
+  }
+
+  &:focus-within :deep(.p-inputicon) {
+    color: var(--primary-color);
+  }
+}
+
+.filter-field {
+  flex: 0 1 auto;
+  min-width: 160px;
+
+  :deep(.p-select) {
+    height: 42px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: var(--radius-lg);
+    transition: all 0.2s ease;
+
+    .p-select-label {
+      padding: 0 1rem;
+      line-height: 40px;
+      font-size: 0.9375rem;
+      font-weight: 500;
+    }
+
+    &:not(.p-disabled):hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    &.p-focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
     }
   }
 
-  :deep(.pi-search) {
-    left: 1rem;
+  :deep(.p-button) {
+    height: 42px;
+    width: 42px;
+    border-radius: var(--radius-lg);
   }
 }
 
