@@ -1,9 +1,10 @@
 .todo-list-page {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  max-width: 1100px;
+  gap: 1.5rem;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .page-header {
@@ -12,6 +13,17 @@
     justify-content: space-between;
     align-items: center;
     gap: 2rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1);
+    }
 
     .header-info {
       display: flex;
@@ -21,17 +33,23 @@
   }
 
   .page-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: -0.02em;
+    font-size: 2.25rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-500) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.03em;
     margin: 0;
+    line-height: 1.2;
   }
 
   .page-description {
-    font-size: 0.9375rem;
+    font-size: 1rem;
     color: var(--text-secondary);
     margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.01em;
   }
 }
 
@@ -40,38 +58,61 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
+  padding: 5rem 2rem;
   text-align: center;
-  background: rgba(239, 68, 68, 0.05);
-  border: 1px solid rgba(239, 68, 68, 0.1);
-  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.02) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(10px);
 
   .error-icon {
-    font-size: 3rem;
-    color: #ef4444;
+    font-size: 4rem;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 1.5rem;
+    animation: pulse 2s ease-in-out infinite;
   }
 
   .error-message {
     color: var(--text-primary);
-    font-weight: 500;
-    margin-bottom: 1.5rem;
-    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
   }
 }
 
 @media (max-width: 768px) {
   .todo-list-page {
-    gap: 1.5rem;
+    gap: 1.25rem;
+    padding: 0 0.75rem;
   }
 
   .header-content {
     flex-direction: column;
     align-items: stretch;
     gap: 1.5rem;
+    padding: 1.25rem 1.5rem;
   }
 
   .page-title {
-    font-size: 1.75rem;
+    font-size: 1.875rem;
+  }
+
+  .page-description {
+    font-size: 0.9375rem;
   }
 }

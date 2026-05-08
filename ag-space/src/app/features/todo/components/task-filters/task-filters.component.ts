@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { Category } from '../../models/category.model';
 import { TaskPriority, TaskStatus, PRIORITY_CONFIG, STATUS_CONFIG } from '../../models/task.model';
 import { TodoFacade } from '../../services/todo.facade';
@@ -16,19 +18,22 @@ interface FilterOption {
 @Component({
   selector: 'app-task-filters',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, SelectModule, ButtonModule],
+  imports: [CommonModule, FormsModule, InputTextModule, SelectModule, ButtonModule, ConfirmDialogModule],
+  providers: [ConfirmationService],
   templateUrl: './task-filters.component.html',
   styleUrl: './task-filters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskFiltersComponent {
   private readonly facade = inject(TodoFacade);
+  private readonly confirmationService = inject(ConfirmationService);
 
   readonly categories = input.required<Category[]>();
 
   readonly filterChange = output<{ search?: string; category_id?: string | null; priority?: TaskPriority; status?: TaskStatus }>();
   readonly clearFilters = output<void>();
   readonly categoryAdded = output<void>();
+  readonly categoryDeleted = output<void>();
 
   search = '';
   selectedCategory: string | null = null;
@@ -75,6 +80,11 @@ export class TaskFiltersComponent {
 
   onCategoryChange(value: string | null): void {
     this.selectedCategory = value;
+    this.emitFilterChange();
+  }
+
+  onClearCategory(): void {
+    this.selectedCategory = null;
     this.emitFilterChange();
   }
 
@@ -129,5 +139,32 @@ export class TaskFiltersComponent {
   cancelAddCategory(): void {
     this.showAddCategory = false;
     this.newCategoryName = '';
+  }
+
+  canDeleteCategory(): boolean {
+    return !!this.selectedCategory && 
+           this.selectedCategory !== 'uncategorized' &&
+           this.categories().some(c => c.id === this.selectedCategory);
+  }
+
+  onDeleteCategory(): void {
+    if (!this.selectedCategory) return;
+
+    const category = this.categories().find(c => c.id === this.selectedCategory);
+    if (!category) return;
+
+    this.confirmationService.confirm({
+      message: `Are you sure you want to delete the category "${category.name}"? Tasks in this category will be moved to Uncategorized.`,
+      header: 'Delete Category',
+      icon: 'pi pi-exclamation-triangle',
+      accept: async () => {
+        const success = await this.facade.deleteCategory(this.selectedCategory!);
+        if (success) {
+          this.selectedCategory = null;
+          this.emitFilterChange();
+          this.categoryDeleted.emit();
+        }
+      }
+    });
   }
 }

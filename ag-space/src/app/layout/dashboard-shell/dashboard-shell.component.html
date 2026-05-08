@@ -14,16 +14,8 @@
       (closeMobileMenu)="toggleMobileMenu()"
     />
 
-    <div
-      class="sidebar-overlay"
-      [class.visible]="mobileMenuOpen()"
-      (click)="toggleMobileMenu()"
-      aria-hidden="true"
-    ></div>
-
     <main
       class="dashboard-content"
-      [ngClass]="{ 'dashboard-content-overlay': mobileMenuOpen() }"
       aria-live="polite"
     >
       <router-outlet />

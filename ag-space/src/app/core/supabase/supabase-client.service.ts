@@ -19,7 +19,7 @@ export class SupabaseClientService {
 
       this.client = createClient(url, publishableKey, {
         auth: {
-          storage: window.sessionStorage,
+          storage: window.localStorage,
           autoRefreshToken: true,
           persistSession: true,
           detectSessionInUrl: true,
