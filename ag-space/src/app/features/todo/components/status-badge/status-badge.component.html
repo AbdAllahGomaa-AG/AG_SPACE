@@ -1,0 +1,9 @@
+<span 
+  class="status-badge"
+  [class]="'status-' + status().toLowerCase()"
+  [style.color]="config().color"
+  [style.border-color]="config().color + '30'"
+  [style.background-color]="config().color + '12'">
+  <i [class]="config().icon"></i>
+  <span>{{ config().label }}</span>
+</span>

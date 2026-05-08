@@ -1,0 +1,8 @@
+<span 
+  class="category-badge"
+  [style.color]="displayCategory().color"
+  [style.border-color]="displayCategory().color + '30'"
+  [style.background-color]="displayCategory().color + '12'">
+  <i [class]="displayCategory().icon"></i>
+  <span>{{ displayCategory().name }}</span>
+</span>
