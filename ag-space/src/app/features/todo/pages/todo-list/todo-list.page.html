@@ -4,13 +4,19 @@
   <!-- Header -->
   <header class="page-header">
     <div class="header-content">
-      <h1 class="page-title">{{ viewTitle() }}</h1>
-      <p-button 
-        label="New Task" 
-        icon="pi pi-plus" 
-        severity="primary"
-        (onClick)="onCreateTask()">
-      </p-button>
+      <div class="header-info">
+        <h1 class="page-title">{{ viewTitle() }}</h1>
+        <p class="page-description">Manage and organize your tasks with precision.</p>
+      </div>
+      <div class="header-actions">
+        <p-button 
+          label="New Task" 
+          icon="pi pi-plus" 
+          severity="primary"
+          styleClass="p-button-lg"
+          (onClick)="onCreateTask()">
+        </p-button>
+      </div>
     </div>
   </header>
 
@@ -52,6 +58,7 @@
     [header]="editingTaskId() ? 'Edit Task' : 'New Task'"
     [modal]="true"
     [style]="{ width: '500px' }"
+    styleClass="premium-dialog"
     [draggable]="false"
     [resizable]="false">
     <app-task-form

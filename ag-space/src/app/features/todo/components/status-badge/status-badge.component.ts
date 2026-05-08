@@ -9,9 +9,10 @@ import { TaskStatus, STATUS_CONFIG } from '../../models/task.model';
   template: `
     <span 
       class="status-badge"
-      [class]="'status-' + status()"
-      [style.background-color]="config().color + '20'"
-      [style.color]="config().color">
+      [class]="'status-' + status().toLowerCase()"
+      [style.color]="config().color"
+      [style.border-color]="config().color + '30'"
+      [style.background-color]="config().color + '12'">
       <i [class]="config().icon"></i>
       <span>{{ config().label }}</span>
     </span>
@@ -20,21 +21,19 @@ import { TaskStatus, STATUS_CONFIG } from '../../models/task.model';
     .status-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.375rem;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
+      gap: 0.5rem;
+      padding: 0.3125rem 0.75rem;
+      border-radius: var(--radius-full);
       font-size: 0.75rem;
-      font-weight: 500;
+      font-weight: 600;
+      border: 1px solid;
       white-space: nowrap;
+      letter-spacing: 0.01em;
+      transition: all 0.2s ease;
     }
 
     .status-badge i {
-      font-size: 0.75rem;
-    }
-
-    .status-done {
-      text-decoration: line-through;
-      opacity: 0.7;
+      font-size: 0.8125rem;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,14 +1,17 @@
 <div class="task-list">
   <!-- Loading State -->
   <div *ngIf="isLoading()" class="loading-state">
-    <p-progressSpinner [style]="{ width: '40px', height: '40px' }"></p-progressSpinner>
-    <p>Loading tasks...</p>
+    <p-progressSpinner [style]="{ width: '48px', height: '48px' }" strokeWidth="3"></p-progressSpinner>
+    <span class="loading-text">Loading your tasks...</span>
   </div>
 
   <!-- Empty State -->
   <div *ngIf="!isLoading() && !hasTasks()" class="empty-state">
-    <i class="pi pi-check-circle empty-icon"></i>
-    <p class="empty-message">{{ emptyMessage() }}</p>
+    <div class="empty-icon">
+      <i class="pi pi-check-circle"></i>
+    </div>
+    <h3 class="empty-message">All caught up!</h3>
+    <p class="empty-subtitle">{{ emptyMessage() }}</p>
   </div>
 
   <!-- Task List -->

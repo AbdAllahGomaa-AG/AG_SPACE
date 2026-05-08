@@ -9,8 +9,9 @@ import { Category, UNCATEGORIZED } from '../../models/category.model';
   template: `
     <span 
       class="category-badge"
-      [style.background-color]="displayCategory().color + '20'"
-      [style.color]="displayCategory().color">
+      [style.color]="displayCategory().color"
+      [style.border-color]="displayCategory().color + '30'"
+      [style.background-color]="displayCategory().color + '12'">
       <i [class]="displayCategory().icon"></i>
       <span>{{ displayCategory().name }}</span>
     </span>
@@ -19,16 +20,19 @@ import { Category, UNCATEGORIZED } from '../../models/category.model';
     .category-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.375rem;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
+      gap: 0.5rem;
+      padding: 0.3125rem 0.75rem;
+      border-radius: var(--radius-md);
       font-size: 0.75rem;
-      font-weight: 500;
+      font-weight: 600;
+      border: 1px solid;
       white-space: nowrap;
+      letter-spacing: 0.01em;
+      transition: all 0.2s ease;
     }
 
     .category-badge i {
-      font-size: 0.75rem;
+      font-size: 0.8125rem;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
