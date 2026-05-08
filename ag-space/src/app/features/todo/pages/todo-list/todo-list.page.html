@@ -1,0 +1,64 @@
+<div class="todo-list-page">
+  <p-toast></p-toast>
+
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">{{ viewTitle() }}</h1>
+      <p-button 
+        label="New Task" 
+        icon="pi pi-plus" 
+        severity="primary"
+        (onClick)="onCreateTask()">
+      </p-button>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <app-task-filters
+    [categories]="categories()"
+    (filterChange)="onFilterChange($event)"
+    (clearFilters)="onClearFilters()">
+  </app-task-filters>
+
+  <!-- Error State -->
+  <div *ngIf="error()" class="error-state">
+    <i class="pi pi-exclamation-circle error-icon"></i>
+    <p class="error-message">{{ error() }}</p>
+    <p-button 
+      label="Retry" 
+      icon="pi pi-refresh"
+      severity="secondary"
+      (onClick)="loadData()">
+    </p-button>
+  </div>
+
+  <!-- Task List -->
+  <app-task-list
+    *ngIf="!error()"
+    [tasks]="tasks()"
+    [categories]="categories()"
+    [isLoading]="isLoading()"
+    (editTask)="onEditTask($event)"
+    (completeTask)="onCompleteTask($event)"
+    (reopenTask)="onReopenTask($event)"
+    (deleteTask)="onDeleteTask($event)">
+  </app-task-list>
+
+  <!-- Task Form Dialog -->
+  <p-dialog
+    [visible]="showTaskForm()"
+    (visibleChange)="onCloseForm()"
+    [header]="editingTaskId() ? 'Edit Task' : 'New Task'"
+    [modal]="true"
+    [style]="{ width: '500px' }"
+    [draggable]="false"
+    [resizable]="false">
+    <app-task-form
+      [categories]="categories()"
+      [taskId]="editingTaskId()"
+      (saved)="onCloseForm()"
+      (cancelled)="onCloseForm()">
+    </app-task-form>
+  </p-dialog>
+</div>

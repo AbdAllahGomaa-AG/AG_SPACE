@@ -20,42 +20,13 @@
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section">
-      <span class="nav-section-title" [class.hidden]="collapsed()">Main</span>
       @for (link of mainLinks; track link.label) {
         <a
           class="nav-link"
-          [class.active]="link.label === 'Overview'"
+          [routerLink]="link.route || '/'"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: link.route === '/' }"
           [attr.aria-current]="link.label === 'Overview' ? 'page' : null"
-          [pTooltip]="collapsed() ? link.label : undefined"
-          tooltipPosition="right"
-          (click)="onNavItemClick()"
-        >
-          <i [class]="link.icon"></i>
-          <span class="nav-link-label" [class.hidden]="collapsed()">{{ link.label }}</span>
-        </a>
-      }
-    </div>
-
-    <div class="nav-section">
-      <span class="nav-section-title" [class.hidden]="collapsed()">Workspace</span>
-      @for (link of workspaceLinks; track link.label) {
-        <a
-          class="nav-link"
-          [pTooltip]="collapsed() ? link.label : undefined"
-          tooltipPosition="right"
-          (click)="onNavItemClick()"
-        >
-          <i [class]="link.icon"></i>
-          <span class="nav-link-label" [class.hidden]="collapsed()">{{ link.label }}</span>
-        </a>
-      }
-    </div>
-
-    <div class="nav-section">
-      <span class="nav-section-title" [class.hidden]="collapsed()">Account</span>
-      @for (link of accountLinks; track link.label) {
-        <a
-          class="nav-link"
           [pTooltip]="collapsed() ? link.label : undefined"
           tooltipPosition="right"
           (click)="onNavItemClick()"

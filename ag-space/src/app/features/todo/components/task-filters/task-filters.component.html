@@ -1,0 +1,70 @@
+<div class="task-filters">
+  <div class="filter-row">
+    <!-- Search -->
+    <div class="filter-field search-field">
+      <span class="p-input-icon-left w-full">
+        <i class="pi pi-search"></i>
+        <input 
+          type="text" 
+          pInputText 
+          [(ngModel)]="search" 
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Search tasks..."
+          class="w-full">
+      </span>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="filter-field">
+      <p-select
+        [options]="fullCategoryOptions"
+        [(ngModel)]="selectedCategory"
+        (ngModelChange)="onCategoryChange($event)"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Category"
+        [showClear]="true"
+        styleClass="w-full">
+      </p-select>
+    </div>
+
+    <!-- Priority Filter -->
+    <div class="filter-field">
+      <p-select
+        [options]="priorityOptions"
+        [(ngModel)]="selectedPriority"
+        (ngModelChange)="onPriorityChange($event)"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Priority"
+        [showClear]="true"
+        styleClass="w-full">
+      </p-select>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="filter-field">
+      <p-select
+        [options]="statusOptions"
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="onStatusChange($event)"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Status"
+        [showClear]="true"
+        styleClass="w-full">
+      </p-select>
+    </div>
+
+    <!-- Clear Button -->
+    <div class="filter-field" *ngIf="hasActiveFilters()">
+      <p-button
+        icon="pi pi-times"
+        severity="secondary"
+        (onClick)="onClear()"
+        pTooltip="Clear filters"
+        tooltipPosition="top">
+      </p-button>
+    </div>
+  </div>
+</div>

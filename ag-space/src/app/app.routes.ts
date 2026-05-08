@@ -15,6 +15,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'todos',
+    loadChildren: () => import('./features/todo/todo.routes').then((m) => m.TODO_ROUTES),
+    canActivate: [authGuard],
+  },
+  {
     path: '**',
     redirectTo: '/',
   },

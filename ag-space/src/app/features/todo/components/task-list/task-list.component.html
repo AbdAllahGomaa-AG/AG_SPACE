@@ -1,0 +1,28 @@
+<div class="task-list">
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-state">
+    <p-progressSpinner [style]="{ width: '40px', height: '40px' }"></p-progressSpinner>
+    <p>Loading tasks...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading() && !hasTasks()" class="empty-state">
+    <i class="pi pi-check-circle empty-icon"></i>
+    <p class="empty-message">{{ emptyMessage() }}</p>
+  </div>
+
+  <!-- Task List -->
+  <div *ngIf="!isLoading() && hasTasks()" class="tasks-container">
+    <app-task-card
+      *ngFor="let task of tasks(); trackBy: trackByTaskId"
+      [task]="task"
+      [category]="getCategoryForTask(task)"
+      [showCompleteButton]="showCompleteButton()"
+      [showReopenButton]="showReopenButton()"
+      (editTask)="editTask.emit($event)"
+      (completeTask)="completeTask.emit($event)"
+      (reopenTask)="reopenTask.emit($event)"
+      (deleteTask)="deleteTask.emit($event)">
+    </app-task-card>
+  </div>
+</div>
