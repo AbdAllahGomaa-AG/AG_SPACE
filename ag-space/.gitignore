@@ -6,10 +6,18 @@
 /out-tsc
 /bazel-out
 
+# Vercel
+.vercel
+
 # Node
 /node_modules
 npm-debug.log
 yarn-error.log
+
+# Environment files (if using .env files in the future)
+.env
+.env.local
+.env.*.local
 
 # IDEs and editors
 .idea/
