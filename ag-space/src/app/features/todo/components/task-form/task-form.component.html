@@ -74,7 +74,7 @@
             type="button"
             label="Add"
             (onClick)="onAddCategory()"
-            [loading]="isAddingCategory"
+            [loading]="isAddingCategory()"
             [disabled]="!newCategoryName.trim()"
             size="small">
           </p-button>

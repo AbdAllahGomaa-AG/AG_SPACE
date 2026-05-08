@@ -34,7 +34,12 @@ export class TodoApiService {
 
     const { data, error } = await client
       .from('categories')
-      .insert({ ...request, user_id: user.id })
+      .insert({
+        name: request.name,
+        color: request.color || '#9ca3af',
+        icon: request.icon || 'pi pi-tag',
+        user_id: user.id
+      })
       .select()
       .single();
 

@@ -41,7 +41,7 @@ export class TaskFormComponent implements OnInit {
   // Add category form
   showAddCategory = false;
   newCategoryName = '';
-  isAddingCategory = false;
+  readonly isAddingCategory = signal(false);
 
   readonly priorityOptions = Object.entries(PRIORITY_CONFIG).map(([value, config]) => ({
     value: value as TaskPriority,
@@ -117,14 +117,16 @@ export class TaskFormComponent implements OnInit {
     const name = this.newCategoryName.trim();
     if (!name) return;
 
-    this.isAddingCategory = true;
-    const category = await this.facade.createCategory(name);
-    this.isAddingCategory = false;
-
-    if (category) {
-      this.selectedCategory = category.id;
-      this.showAddCategory = false;
-      this.newCategoryName = '';
+    this.isAddingCategory.set(true);
+    try {
+      const category = await this.facade.createCategory(name);
+      if (category) {
+        this.selectedCategory = category.id;
+        this.showAddCategory = false;
+        this.newCategoryName = '';
+      }
+    } finally {
+      this.isAddingCategory.set(false);
     }
   }
 
