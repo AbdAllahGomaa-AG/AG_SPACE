@@ -64,11 +64,13 @@
     styleClass="premium-dialog"
     [draggable]="false"
     [resizable]="false">
-    <app-task-form
-      [categories]="categories()"
-      [taskId]="editingTaskId()"
-      (saved)="onCloseForm()"
-      (cancelled)="onCloseForm()">
-    </app-task-form>
+    @if (showTaskForm()) {
+      <app-task-form
+        [categories]="categories()"
+        [taskId]="editingTaskId()"
+        (saved)="onCloseForm()"
+        (cancelled)="onCloseForm()">
+      </app-task-form>
+    }
   </p-dialog>
 </div>

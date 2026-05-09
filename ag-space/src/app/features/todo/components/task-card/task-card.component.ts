@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, input, output, signal, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnInit, input, output,
+  signal, computed, inject
+} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
@@ -56,7 +59,7 @@ export class TaskCardComponent {
   readonly isExpanded = signal(false);
   readonly newSubtaskTitle = signal('');
 
-  readonly isDone = () => this.task().status === 'done';
+  readonly isDone = computed(() => this.task().status === 'done');
 
   readonly progress = computed<SubtaskProgress>(() => {
     const subs = this.subtasks();
@@ -70,18 +73,18 @@ export class TaskCardComponent {
     };
   });
 
-  readonly dueDateFormatted = () => {
+  readonly dueDateFormatted = computed(() => {
     const dueDate = this.task().due_date;
     if (!dueDate) return null;
     return this.datePipe.transform(dueDate, 'MMM d, yyyy');
-  };
+  });
 
-  readonly isOverdue = () => {
+  readonly isOverdue = computed(() => {
     if (this.isDone()) return false;
     const dueDate = this.task().due_date;
     if (!dueDate) return false;
     return new Date(dueDate) < new Date();
-  };
+  });
 
   onEdit(): void {
     this.editTask.emit(this.task().id);

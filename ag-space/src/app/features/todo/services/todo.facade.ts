@@ -1,6 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { TodoApiService } from './todo-api.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { SoundService } from './sound.service';
 import { Category, UNCATEGORIZED } from '../models/category.model';
 import { Task, TaskFilter, TaskStatus, TaskPriority, ReorderItem, SubtaskProgress } from '../models/task.model';
 
@@ -19,6 +20,7 @@ interface TodoState {
 export class TodoFacade {
   private readonly api = inject(TodoApiService);
   private readonly authService = inject(AuthService);
+  private readonly soundService = inject(SoundService);
 
   // ==================== STATE SIGNALS ====================
   
@@ -462,12 +464,19 @@ export class TodoFacade {
     this.setLoading(true);
     this.setError(null);
 
+    const previousTask = this.state().tasks.find(t => t.id === taskId);
+
     const { data, error } = await this.api.setTaskStatus(taskId, status);
 
     if (error || !data) {
       this.setError(error?.message || 'Failed to update task status');
       this.setLoading(false);
       return false;
+    }
+
+    // Play sound if transitioned to done
+    if (status === 'done' && previousTask && previousTask.status !== 'done') {
+      this.soundService.playSuccess();
     }
 
     this.state.update(s => ({
@@ -548,6 +557,13 @@ export class TodoFacade {
   async reorderTasks(items: ReorderItem[]): Promise<boolean> {
     const previousState = this.state().tasks;
 
+    // Check if any item is transitioning to 'done'
+    const hasNewDone = items.some(item => {
+      if (item.status !== 'done') return false;
+      const prev = previousState.find(t => t.id === item.id);
+      return prev && prev.status !== 'done';
+    });
+
     this.state.update(s => {
       const updated = s.tasks.map(t => {
         const match = items.find(i => i.id === t.id);
@@ -561,6 +577,10 @@ export class TodoFacade {
       });
       return { ...s, tasks: updated };
     });
+
+    if (hasNewDone) {
+      this.soundService.playSuccess();
+    }
 
     const { error } = await this.api.batchReorder(items);
 
