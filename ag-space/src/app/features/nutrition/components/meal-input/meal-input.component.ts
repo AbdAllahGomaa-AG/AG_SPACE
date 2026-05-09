@@ -16,6 +16,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class MealInputComponent {
   readonly analyze = output<{ text?: string, file?: File }>();
+  readonly manualEntry = output<void>();
 
   description = signal('');
   selectedFile = signal<File | null>(null);
@@ -45,6 +46,10 @@ export class MealInputComponent {
         file: this.selectedFile() || undefined
       });
     }
+  }
+
+  onManualClick(): void {
+    this.manualEntry.emit();
   }
 
   get isValid(): boolean {

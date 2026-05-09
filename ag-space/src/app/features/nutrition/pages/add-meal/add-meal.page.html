@@ -19,7 +19,7 @@
         <p>Our AI is identifying ingredients and estimating nutrients.</p>
       </div>
     } @else {
-      <app-meal-input (analyze)="onAnalyze($event)" />
+      <app-meal-input (analyze)="onAnalyze($event)" (manualEntry)="onManualEntry()" />
     }
   </div>
 

@@ -41,6 +41,13 @@
   <!-- Action Section -->
   <div class="action-section">
     <p-button 
+      label="Manual Entry" 
+      icon="pi pi-pencil" 
+      severity="secondary"
+      (onClick)="onManualClick()"
+      styleClass="manual-btn"
+    />
+    <p-button 
       label="Analyze with AI" 
       icon="pi pi-sparkles" 
       [disabled]="!isValid" 

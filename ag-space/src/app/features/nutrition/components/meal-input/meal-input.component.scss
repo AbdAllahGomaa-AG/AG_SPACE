@@ -102,6 +102,29 @@
 .action-section {
   display: flex;
   justify-content: center;
+  gap: 1rem;
+
+  ::ng-deep .manual-btn {
+    padding: 1.25rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    &:active {
+      transform: translateY(0) scale(0.98);
+    }
+  }
 
   ::ng-deep .analyze-btn {
     padding: 1.25rem 3rem;

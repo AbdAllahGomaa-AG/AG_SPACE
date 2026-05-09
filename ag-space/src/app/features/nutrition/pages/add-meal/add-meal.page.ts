@@ -61,6 +61,27 @@ export class AddMealPage {
     }
   }
 
+  onManualEntry(): void {
+    // Set an empty pending analysis and bypass AI
+    this.facade.setPendingAnalysis({
+      meal_name: 'Custom Meal',
+      items: [],
+      totals: {
+        calories: 0,
+        protein_g: 0,
+        carbs_g: 0,
+        fat_g: 0,
+        fiber_g: 0,
+        sugars_g: 0,
+        sodium_mg: 0
+      },
+      analysis_confidence: 100,
+      assumptions: ['Manual Entry'],
+      clarifying_question: null
+    });
+    this.router.navigate(['/nutrition/review']);
+  }
+
   private fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
