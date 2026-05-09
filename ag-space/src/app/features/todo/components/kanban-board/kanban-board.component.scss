@@ -1,17 +1,16 @@
 :host {
   display: flex;
   flex: 1;
-  min-height: 0;
+  width: 100%;
 }
 
 .kanban-board {
   display: flex;
   flex-direction: row;
   gap: 1rem;
+  padding-bottom: 1.5rem;
+  width: 100%;
   flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  padding-bottom: 0.5rem;
 }
 
 .loading-state {
@@ -24,8 +23,7 @@
 
 .kanban-column {
   flex: 1 1 0;
-  min-width: 280px;
-  max-width: 420px;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   background: var(--surface-50);
@@ -85,8 +83,6 @@
 }
 
 .column-body {
-  flex: 1;
-  overflow-y: auto;
   padding: 0.5rem 0.5rem 0.75rem;
   display: flex;
   flex-direction: column;
@@ -143,17 +139,12 @@
 @media (max-width: 900px) {
   .kanban-board {
     flex-direction: column;
-    overflow-y: auto;
   }
 
   .kanban-column {
     max-width: none;
     min-width: 0;
     flex: none;
-  }
-
-  .column-body {
-    max-height: 400px;
   }
 }
 
