@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TodoFacade } from '../../services/todo.facade';
 import { TaskPriority, TaskStatus } from '../../models/task.model';
-import { TaskListComponent } from '../../components/task-list/task-list.component';
+import { KanbanBoardComponent } from '../../components/kanban-board/kanban-board.component';
 import { TaskFiltersComponent } from '../../components/task-filters/task-filters.component';
 import { TaskFormComponent } from '../../components/task-form/task-form.component';
 import { ButtonModule } from 'primeng/button';
@@ -16,7 +16,7 @@ import { MessageService } from 'primeng/api';
   standalone: true,
   imports: [
     CommonModule,
-    TaskListComponent,
+    KanbanBoardComponent,
     TaskFiltersComponent,
     TaskFormComponent,
     ButtonModule,

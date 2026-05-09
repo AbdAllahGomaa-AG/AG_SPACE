@@ -1,0 +1,57 @@
+<div class="kanban-board">
+  @if (isLoadingFallback()) {
+    <div class="loading-state">
+      <p-progressSpinner [style]="{ width: '48px', height: '48px' }" strokeWidth="3"></p-progressSpinner>
+    </div>
+  } @else {
+    @for (col of columns(); track col.status; let colIdx = $index) {
+      <div class="kanban-column"
+        [class.drag-over]="dragColIndex() !== null"
+        (dragover)="onColumnDragOver($event)"
+        (dragleave)="onColumnDragLeave($event)"
+        (drop)="onColumnDrop($event, colIdx)">
+        <div class="column-header">
+          <div class="column-title-row">
+            <div class="column-dot" [class.dot-todo]="col.status === 'todo'"
+              [class.dot-in-progress]="col.status === 'in_progress'"
+              [class.dot-done]="col.status === 'done'"></div>
+            <h3 class="column-title">{{ col.label }}</h3>
+            <span class="column-count">{{ columnCounts()[col.status] }}</span>
+          </div>
+        </div>
+
+        <div class="column-body">
+          @if (col.tasks.length === 0) {
+            <div class="column-empty">
+              <i class="pi pi-inbox"></i>
+              <span>No tasks</span>
+            </div>
+          }
+
+          @for (task of col.tasks; track task.id; let itemIdx = $index) {
+            <div class="task-card-wrapper"
+              [class.drag-source]="dragColIndex() === colIdx && dragItemIndex() === itemIdx"
+              draggable="true"
+              (dragstart)="onDragStart($event, colIdx, itemIdx)"
+              (dragend)="onDragEnd($event)">
+              <app-task-card
+                [task]="task"
+                [category]="getCategoryForTask(task)"
+                [subtasks]="getSubtasksForTask(task.id)"
+                [showCompleteButton]="col.status !== 'done'"
+                [showReopenButton]="col.status === 'done'"
+                (editTask)="editTask.emit($event)"
+                (completeTask)="completeTask.emit($event)"
+                (reopenTask)="reopenTask.emit($event)"
+                (deleteTask)="deleteTask.emit($event)"
+                (subtaskToggled)="onSubtaskToggled($event)"
+                (subtaskDeleted)="onSubtaskDeleted($event)"
+                (createSubtask)="onCreateSubtask($event)">
+              </app-task-card>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

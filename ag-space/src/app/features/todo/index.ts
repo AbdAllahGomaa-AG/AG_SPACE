@@ -10,7 +10,9 @@ export type {
   TaskSortField,
   TaskSortOrder,
   TaskPriority, 
-  TaskStatus, 
+  TaskStatus,
+  ReorderItem,
+  SubtaskProgress,
 } from './models/task.model';
 export { 
   PRIORITY_CONFIG,

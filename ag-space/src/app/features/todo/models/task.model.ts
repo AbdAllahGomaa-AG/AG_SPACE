@@ -20,6 +20,8 @@ export interface Task {
   description: string | null;
   priority: TaskPriority;
   status: TaskStatus;
+  parent_id: string | null;
+  sort_order: number;
   start_date: string | null; // timestamptz
   due_date: string | null;   // timestamptz
   completed_at: string | null;
@@ -38,6 +40,8 @@ export interface CreateTaskRequest {
   category_id?: string | null;
   priority?: TaskPriority;
   status?: TaskStatus;
+  parent_id?: string | null;
+  sort_order?: number;
   start_date?: string | null;
   due_date?: string | null;
 }
@@ -97,6 +101,20 @@ export const PRIORITY_CONFIG: Record<TaskPriority, { label: string; color: strin
 /**
  * Status configuration for UI display
  */
+export interface ReorderItem {
+  id: string;
+  sort_order: number;
+  parent_id?: string | null;
+  status?: TaskStatus;
+}
+
+export interface SubtaskProgress {
+  total: number;
+  completed: number;
+  ratio: number;
+  label: string;
+}
+
 export const STATUS_CONFIG: Record<TaskStatus, { label: string; color: string; icon: string }> = {
   todo: { label: 'To Do', color: '#6b7280', icon: 'pi pi-circle' },
   in_progress: { label: 'In Progress', color: '#3b82f6', icon: 'pi pi-spinner' },

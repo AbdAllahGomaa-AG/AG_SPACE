@@ -43,6 +43,13 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Easing */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.44, 1);
 }
 
 html,
@@ -78,6 +85,15 @@ body {
   --p-content-hover-background: var(--surface-200);
   --p-content-color: var(--text-primary);
   --p-content-hover-color: var(--text-primary);
+}
+
+/* Priority accent colors */
+:root {
+  --priority-urgent: #ef4444;
+  --priority-high: #f59e0b;
+  --priority-medium: #3b82f6;
+  --priority-low: #6b7280;
+  --status-done: #10b981;
 }
 
 /* Custom scrollbar */

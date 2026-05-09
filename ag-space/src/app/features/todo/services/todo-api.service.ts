@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { SupabaseClientService } from '../../../core/supabase/supabase-client.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Category, CreateCategoryRequest, UpdateCategoryRequest } from '../models/category.model';
-import { Task, CreateTaskRequest, UpdateTaskRequest, TaskFilter, TaskStatus } from '../models/task.model';
+import { Task, CreateTaskRequest, UpdateTaskRequest, TaskFilter, TaskStatus, ReorderItem } from '../models/task.model';
 
 @Injectable({
   providedIn: 'root',
@@ -260,5 +260,78 @@ export class TodoApiService {
 
   async setTaskStatus(id: string, status: TaskStatus): Promise<{ data: Task | null; error: Error | null }> {
     return this.updateTask(id, { status });
+  }
+
+  // ==================== SUBTASK METHODS ====================
+
+  async getSubtasks(parentId: string): Promise<{ data: Task[] | null; error: Error | null }> {
+    const client = this.supabaseClient.getClient();
+    const { data, error } = await client
+      .from('tasks')
+      .select('*')
+      .eq('parent_id', parentId)
+      .order('sort_order', { ascending: true });
+
+    return { data, error };
+  }
+
+  async createSubtask(parentId: string, title: string): Promise<{ data: Task | null; error: Error | null }> {
+    const client = this.supabaseClient.getClient();
+    const user = this.authService.user();
+    if (!user) {
+      return { data: null, error: new Error('User not authenticated') };
+    }
+
+    const { data, error } = await client
+      .from('tasks')
+      .insert({
+        user_id: user.id,
+        title,
+        parent_id: parentId,
+        status: 'todo',
+      })
+      .select()
+      .single();
+
+    return { data, error };
+  }
+
+  async batchReorder(items: ReorderItem[]): Promise<{ error: Error | null }> {
+    const client = this.supabaseClient.getClient();
+    const updates = items.map(item => ({
+      id: item.id,
+      sort_order: item.sort_order,
+      parent_id: item.parent_id ?? null,
+      status: item.status,
+    }));
+
+    // Use a single RPC call for atomic batch update
+    const { error } = await client.rpc('batch_reorder_tasks', { items: updates });
+
+    if (error) {
+      // Fallback: update individually if RPC not available
+      for (const update of updates) {
+        const updatePayload: Record<string, unknown> = { sort_order: update.sort_order };
+        if (update.parent_id !== undefined) updatePayload['parent_id'] = update.parent_id;
+        if (update.status) updatePayload['status'] = update.status;
+        const { error: itemError } = await client
+          .from('tasks')
+          .update(updatePayload)
+          .eq('id', update.id);
+        if (itemError) return { error: itemError };
+      }
+    }
+
+    return { error: null };
+  }
+
+  async deleteSubtasksBulk(taskIds: string[]): Promise<{ error: Error | null }> {
+    const client = this.supabaseClient.getClient();
+    const { error } = await client
+      .from('tasks')
+      .delete()
+      .in('id', taskIds);
+
+    return { error };
   }
 }

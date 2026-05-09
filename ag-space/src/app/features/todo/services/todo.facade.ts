@@ -1,8 +1,9 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { TodoApiService } from './todo-api.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { SoundService } from './sound.service';
 import { Category, UNCATEGORIZED } from '../models/category.model';
-import { Task, TaskFilter, TaskStatus, TaskPriority } from '../models/task.model';
+import { Task, TaskFilter, TaskStatus, TaskPriority, ReorderItem, SubtaskProgress } from '../models/task.model';
 
 interface TodoState {
   tasks: Task[];
@@ -19,6 +20,7 @@ interface TodoState {
 export class TodoFacade {
   private readonly api = inject(TodoApiService);
   private readonly authService = inject(AuthService);
+  private readonly soundService = inject(SoundService);
 
   // ==================== STATE SIGNALS ====================
   
@@ -52,7 +54,7 @@ export class TodoFacade {
    * Filtered tasks based on current filter state
    */
   readonly filteredTasks = computed(() => {
-    let result = this.state().tasks;
+    let result = this.state().tasks.filter(t => !t.parent_id);
     const filter = this.state().filter;
 
     // Apply search filter
@@ -101,6 +103,7 @@ export class TodoFacade {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     return this.state().tasks.filter(t => {
+      if (t.parent_id) return false;
       if (!t.due_date) return false;
       const dueDate = new Date(t.due_date);
       return dueDate >= today && 
@@ -118,6 +121,7 @@ export class TodoFacade {
     const now = new Date();
     
     return this.state().tasks.filter(t => {
+      if (t.parent_id) return false;
       if (!t.due_date) return false;
       const dueDate = new Date(t.due_date);
       return dueDate < now && 
@@ -136,6 +140,7 @@ export class TodoFacade {
     tomorrow.setHours(0, 0, 0, 0);
 
     return this.state().tasks.filter(t => {
+      if (t.parent_id) return false;
       if (!t.due_date) return false;
       const dueDate = new Date(t.due_date);
       return dueDate >= tomorrow && 
@@ -149,7 +154,10 @@ export class TodoFacade {
    * Completed tasks (status = done)
    */
   readonly completedTasks = computed(() => {
-    return this.state().tasks.filter(t => t.status === 'done');
+    return this.state().tasks.filter(t => {
+      if (t.parent_id) return false;
+      return t.status === 'done';
+    });
   });
 
   /**
@@ -157,6 +165,7 @@ export class TodoFacade {
    */
   readonly activeTasks = computed(() => {
     return this.state().tasks.filter(t => 
+      !t.parent_id &&
       !t.is_archived && 
       t.status !== 'done' && 
       t.status !== 'cancelled'
@@ -175,8 +184,9 @@ export class TodoFacade {
       grouped.set(c.id, []);
     });
 
-    // Group tasks
+    // Group root tasks only
     this.state().tasks.forEach(task => {
+      if (task.parent_id) return;
       const key = task.category_id || 'uncategorized';
       if (!grouped.has(key)) {
         grouped.set(key, []);
@@ -185,6 +195,55 @@ export class TodoFacade {
     });
 
     return grouped;
+  });
+
+  /**
+   * Tasks sorted by sort_order for consistent display
+   */
+  readonly sortedTasks = computed(() => {
+    const all = this.state().tasks;
+    const parents = all.filter(t => !t.parent_id).sort((a, b) => a.sort_order - b.sort_order);
+    const children = all.filter(t => t.parent_id);
+    const result: Task[] = [];
+    for (const p of parents) {
+      result.push(p);
+      const subs = children.filter(c => c.parent_id === p.id).sort((a, b) => a.sort_order - b.sort_order);
+      result.push(...subs);
+    }
+    return result;
+  });
+
+  /**
+   * Get subtasks for a given parent task
+   */
+  getSubtasks(taskId: string): Task[] {
+    return this.state().tasks
+      .filter(t => t.parent_id === taskId)
+      .sort((a, b) => a.sort_order - b.sort_order);
+  }
+
+  /**
+   * Compute progress for a task based on its subtasks
+   */
+  getTaskProgress(taskId: string): SubtaskProgress {
+    const subtasks = this.getSubtasks(taskId);
+    const total = subtasks.length;
+    const completed = subtasks.filter(t => t.status === 'done').length;
+    return {
+      total,
+      completed,
+      ratio: total > 0 ? completed / total : 0,
+      label: total > 0 ? `${completed}/${total}` : '',
+    };
+  }
+
+  /**
+   * Get all root-level tasks (no parent)
+   */
+  readonly rootTasks = computed(() => {
+    return this.state().tasks
+      .filter(t => !t.parent_id)
+      .sort((a, b) => a.sort_order - b.sort_order);
   });
 
   /**
@@ -323,6 +382,7 @@ export class TodoFacade {
       category_id: taskData.category_id,
       priority: taskData.priority,
       status: taskData.status,
+      parent_id: taskData.parent_id,
       start_date: taskData.start_date,
       due_date: taskData.due_date,
     });
@@ -367,7 +427,13 @@ export class TodoFacade {
     this.setLoading(true);
     this.setError(null);
 
-    const { error } = await this.api.deleteTask(taskId);
+    const subtaskIds = this.state().tasks
+      .filter(t => t.parent_id === taskId)
+      .map(t => t.id);
+
+    const allIds = [taskId, ...subtaskIds];
+
+    const { error } = await this.api.deleteSubtasksBulk(allIds);
 
     if (error) {
       this.setError(error.message);
@@ -377,7 +443,7 @@ export class TodoFacade {
 
     this.state.update(s => ({
       ...s,
-      tasks: s.tasks.filter(t => t.id !== taskId),
+      tasks: s.tasks.filter(t => t.id !== taskId && !subtaskIds.includes(t.id)),
     }));
 
     this.setLoading(false);
@@ -398,6 +464,8 @@ export class TodoFacade {
     this.setLoading(true);
     this.setError(null);
 
+    const previousTask = this.state().tasks.find(t => t.id === taskId);
+
     const { data, error } = await this.api.setTaskStatus(taskId, status);
 
     if (error || !data) {
@@ -406,12 +474,122 @@ export class TodoFacade {
       return false;
     }
 
+    // Play sound if transitioned to done
+    if (status === 'done' && previousTask && previousTask.status !== 'done') {
+      this.soundService.playSuccess();
+    }
+
     this.state.update(s => ({
       ...s,
       tasks: s.tasks.map(t => t.id === taskId ? data : t),
     }));
 
     this.setLoading(false);
+    return true;
+  }
+
+  // ==================== SUBTASK METHODS ====================
+
+  async createSubtask(parentId: string, title: string): Promise<boolean> {
+    this.setError(null);
+    const { data, error } = await this.api.createSubtask(parentId, title);
+
+    if (error || !data) {
+      this.setError(error?.message || 'Failed to create subtask');
+      return false;
+    }
+
+    this.state.update(s => ({
+      ...s,
+      tasks: [...s.tasks, data],
+    }));
+    return true;
+  }
+
+  async toggleSubtask(taskId: string, completed: boolean): Promise<boolean> {
+    const task = this.state().tasks.find(t => t.id === taskId);
+    if (!task) return false;
+
+    const optimisticStatus: TaskStatus = completed ? 'done' : 'todo';
+
+    this.state.update(s => ({
+      ...s,
+      tasks: s.tasks.map(t => t.id === taskId ? { ...t, status: optimisticStatus } : t),
+    }));
+
+    const { data, error } = await this.api.setTaskStatus(taskId, optimisticStatus);
+
+    if (error || !data) {
+      this.state.update(s => ({
+        ...s,
+        tasks: s.tasks.map(t => t.id === taskId ? { ...t, status: task.status } : t),
+      }));
+      this.setError(error?.message || 'Failed to update subtask');
+      return false;
+    }
+
+    this.state.update(s => ({
+      ...s,
+      tasks: s.tasks.map(t => t.id === taskId ? data : t),
+    }));
+    return true;
+  }
+
+  async deleteSubtask(taskId: string): Promise<boolean> {
+    this.setError(null);
+
+    const { error } = await this.api.deleteTask(taskId);
+
+    if (error) {
+      this.setError(error.message);
+      return false;
+    }
+
+    this.state.update(s => ({
+      ...s,
+      tasks: s.tasks.filter(t => t.id !== taskId),
+    }));
+    return true;
+  }
+
+  // ==================== REORDER METHODS ====================
+
+  async reorderTasks(items: ReorderItem[]): Promise<boolean> {
+    const previousState = this.state().tasks;
+
+    // Check if any item is transitioning to 'done'
+    const hasNewDone = items.some(item => {
+      if (item.status !== 'done') return false;
+      const prev = previousState.find(t => t.id === item.id);
+      return prev && prev.status !== 'done';
+    });
+
+    this.state.update(s => {
+      const updated = s.tasks.map(t => {
+        const match = items.find(i => i.id === t.id);
+        if (!match) return t;
+        return {
+          ...t,
+          sort_order: match.sort_order,
+          parent_id: match.parent_id !== undefined ? match.parent_id : t.parent_id,
+          status: match.status || t.status,
+        };
+      });
+      return { ...s, tasks: updated };
+    });
+
+    if (hasNewDone) {
+      this.soundService.playSuccess();
+    }
+
+    const { error } = await this.api.batchReorder(items);
+
+    if (error) {
+      this.state.update(s => ({ ...s, tasks: previousState }));
+      this.setError(error?.message || 'Failed to reorder tasks');
+      return false;
+    }
+
     return true;
   }
 
