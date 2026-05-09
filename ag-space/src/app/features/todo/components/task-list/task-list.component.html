@@ -1,31 +1,62 @@
 <div class="task-list">
-  <!-- Loading State -->
-  <div *ngIf="isLoading()" class="loading-state">
-    <p-progressSpinner [style]="{ width: '48px', height: '48px' }" strokeWidth="3"></p-progressSpinner>
-    <span class="loading-text">Loading your tasks...</span>
-  </div>
-
-  <!-- Empty State -->
-  <div *ngIf="!isLoading() && !hasTasks()" class="empty-state">
-    <div class="empty-icon">
-      <i class="pi pi-check-circle"></i>
+  @if (isLoading()) {
+    <div class="skeleton-state">
+      @for (item of [].constructor(skeletonCount); track item; let i = $index) {
+        <div class="skeleton-card" [style.animation-delay]="i * 0.1 + 's'">
+          <div class="skeleton-row">
+            <div class="skeleton-box" style="width: 1rem; height: 1rem; border-radius: 4px;"></div>
+            <div class="skeleton-box" style="width: 55%; height: 1.125rem; border-radius: 6px;"></div>
+          </div>
+          <div class="skeleton-row secondary">
+            <div class="skeleton-box" style="width: 70%; height: 0.75rem; border-radius: 4px;"></div>
+          </div>
+          <div class="skeleton-row meta">
+            <div class="skeleton-box" style="width: 3.5rem; height: 1.25rem; border-radius: 99px;"></div>
+            <div class="skeleton-box" style="width: 4.5rem; height: 1.25rem; border-radius: 99px;"></div>
+          </div>
+        </div>
+      }
     </div>
-    <h3 class="empty-message">All caught up!</h3>
-    <p class="empty-subtitle">{{ emptyMessage() }}</p>
-  </div>
-
-  <!-- Task List -->
-  <div *ngIf="!isLoading() && hasTasks()" class="tasks-container">
-    <app-task-card
-      *ngFor="let task of tasks(); trackBy: trackByTaskId"
-      [task]="task"
-      [category]="getCategoryForTask(task)"
-      [showCompleteButton]="showCompleteButton()"
-      [showReopenButton]="showReopenButton()"
-      (editTask)="editTask.emit($event)"
-      (completeTask)="completeTask.emit($event)"
-      (reopenTask)="reopenTask.emit($event)"
-      (deleteTask)="deleteTask.emit($event)">
-    </app-task-card>
-  </div>
+  } @else if (!hasTasks()) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="pi pi-check-circle"></i>
+      </div>
+      <h3 class="empty-message">All caught up!</h3>
+      <p class="empty-subtitle">{{ emptyMessage() }}</p>
+    </div>
+  } @else {
+    <div class="tasks-container">
+      @for (task of tasks(); track task.id; let i = $index) {
+        <div class="task-card-wrapper"
+          [class.drag-target]="dragTargetIndex() === i"
+          [class.drag-source]="dragSourceIndex() === i"
+          [style.animation-delay]="i * 0.04 + 's'"
+          draggable="true"
+          (dragstart)="onDragStart($event, i)"
+          (dragend)="onDragEnd($event)"
+          (dragover)="onDragOver($event, i)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event, i)">
+          <app-task-card
+            [task]="task"
+            [category]="getCategoryForTask(task)"
+            [subtasks]="getSubtasksForTask(task.id)"
+            [showCompleteButton]="showCompleteButton()"
+            [showReopenButton]="showReopenButton()"
+            (editTask)="editTask.emit($event)"
+            (completeTask)="completeTask.emit($event)"
+            (reopenTask)="reopenTask.emit($event)"
+            (deleteTask)="deleteTask.emit($event)"
+            (subtaskToggled)="onSubtaskToggled($event)"
+            (subtaskDeleted)="onSubtaskDeleted($event)"
+            (createSubtask)="onCreateSubtask($event)">
+          </app-task-card>
+          @if (dragTargetIndex() === i) {
+            <div class="drop-indicator"></div>
+          }
+        </div>
+      }
+    </div>
+  }
 </div>

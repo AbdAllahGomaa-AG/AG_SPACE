@@ -1,0 +1,29 @@
+<div class="subtask-item" [class.subtask-done]="isDone()">
+  <div class="subtask-branch">
+    <div class="branch-line"></div>
+    <div class="branch-node" [class.done]="isDone()"></div>
+  </div>
+  <div class="subtask-drag-handle" draggable="true">
+    <i class="pi pi-grip-vertical"></i>
+  </div>
+  <div class="subtask-checkbox">
+    <p-checkbox
+      [ngModel]="isDone()"
+      (ngModelChange)="onToggle($event)"
+      [binary]="true">
+    </p-checkbox>
+  </div>
+  <span class="subtask-title">{{ subtask().title }}</span>
+  <div class="subtask-actions">
+    <p-button
+      icon="pi pi-trash"
+      severity="danger"
+      [text]="true"
+      [rounded]="true"
+      size="small"
+      (onClick)="onDelete()"
+      pTooltip="Delete subtask"
+      tooltipPosition="top">
+    </p-button>
+  </div>
+</div>

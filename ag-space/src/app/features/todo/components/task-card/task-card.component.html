@@ -1,66 +1,144 @@
-<div class="task-card" [class.task-done]="isDone()" [class.task-overdue]="isOverdue()">
-  <div class="task-header">
-    <div class="task-checkbox-title">
-      <p-checkbox
-        [ngModel]="isDone()"
-        (ngModelChange)="onCheckboxToggle($event)"
-        [binary]="true">
-      </p-checkbox>
-      <h3 class="task-title">{{ task().title }}</h3>
-    </div>
-
-    <div class="task-actions">
-      <p-button
-        *ngIf="showReopenButton() && isDone()"
-        icon="pi pi-undo"
-        severity="secondary"
-        [text]="true"
-        [rounded]="true"
-        size="small"
-        (onClick)="onReopen()"
-        pTooltip="Reopen task"
-        tooltipPosition="top">
-      </p-button>
-
-      <p-button
-        icon="pi pi-pencil"
-        severity="secondary"
-        [text]="true"
-        [rounded]="true"
-        size="small"
-        (onClick)="onEdit()"
-        pTooltip="Edit task"
-        tooltipPosition="top">
-      </p-button>
-
-      <p-button
-        icon="pi pi-trash"
-        severity="danger"
-        [text]="true"
-        [rounded]="true"
-        size="small"
-        (onClick)="onDelete()"
-        pTooltip="Delete task"
-        tooltipPosition="top">
-      </p-button>
-    </div>
+<div class="task-card"
+  [class.task-done]="isDone()"
+  [class.task-overdue]="isOverdue()"
+  [class.task-expanded]="isExpanded()"
+  [class.has-subtasks]="subtasks().length > 0"
+  [attr.data-priority]="task().priority">
+  <div class="card-accent-strip" [style.background]="getPriorityColor(task().priority)"></div>
+  <div class="card-drag-handle" draggable="true">
+    <i class="pi pi-grip-vertical"></i>
   </div>
 
-  <p class="task-description" *ngIf="task().description">
-    {{ task().description }}
-  </p>
+  <div class="card-body">
+    <div class="task-header">
+      <div class="task-checkbox-title">
+        <p-checkbox
+          [ngModel]="isDone()"
+          (ngModelChange)="onCheckboxToggle($event)"
+          [binary]="true">
+        </p-checkbox>
+        <div class="title-group">
+          <h3 class="task-title">{{ task().title }}</h3>
+          @if (task().description) {
+            <p class="task-description">{{ task().description }}</p>
+          }
+        </div>
+      </div>
 
-  <div class="task-meta">
-    <div class="task-badges">
-      <app-category-badge [category]="category()"></app-category-badge>
-      <app-priority-badge [priority]="task().priority"></app-priority-badge>
-      <app-status-badge [status]="task().status"></app-status-badge>
+      <div class="task-actions">
+        @if (showReopenButton() && isDone()) {
+          <p-button
+            icon="pi pi-undo"
+            severity="secondary"
+            [text]="true"
+            [rounded]="true"
+            size="small"
+            (onClick)="onReopen()"
+            pTooltip="Reopen task"
+            tooltipPosition="top">
+          </p-button>
+        }
+        <p-button
+          icon="pi pi-pencil"
+          severity="secondary"
+          [text]="true"
+          [rounded]="true"
+          size="small"
+          (onClick)="onEdit()"
+          pTooltip="Edit task"
+          tooltipPosition="top">
+        </p-button>
+        <p-button
+          icon="pi pi-trash"
+          severity="danger"
+          [text]="true"
+          [rounded]="true"
+          size="small"
+          (onClick)="onDelete()"
+          pTooltip="Delete task"
+          tooltipPosition="top">
+        </p-button>
+      </div>
     </div>
 
-    <div class="task-due-date" *ngIf="dueDateFormatted()" [class.overdue]="isOverdue()">
-      <i class="pi pi-calendar"></i>
-      <span>{{ dueDateFormatted() }}</span>
-      <span *ngIf="isOverdue()" class="overdue-label">(Overdue)</span>
+    <div class="task-progress">
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill"
+          [style.width.%]="progress().ratio * 100"
+          [style.background]="getProgressColor(progress().ratio)"></div>
+      </div>
+      <span class="progress-label" [class.has-progress]="progress().total > 0">
+        @if (progress().total > 0) {
+          {{ progress().label }}
+        } @else {
+          0/0
+        }
+      </span>
     </div>
+
+    <div class="task-meta">
+      <div class="task-badges">
+        <app-category-badge [category]="category()"></app-category-badge>
+        <app-priority-badge [priority]="task().priority"></app-priority-badge>
+        <app-status-badge [status]="task().status"></app-status-badge>
+      </div>
+      <div class="task-meta-right">
+        @if (subtasks().length > 0) {
+          <button class="subtask-toggle" (click)="toggleExpanded()" [class.expanded]="isExpanded()">
+            <i class="pi" [class.pi-chevron-down]="isExpanded()" [class.pi-chevron-right]="!isExpanded()"></i>
+            <span>{{ subtasks().length }} sub{{ subtasks().length !== 1 ? 's' : '' }}</span>
+          </button>
+        } @else {
+          <button class="subtask-toggle" (click)="toggleExpanded()" [class.expanded]="isExpanded()">
+            <i class="pi pi-plus"></i>
+            <span>Subtask</span>
+          </button>
+        }
+        <div class="task-due-date" [class.overdue]="isOverdue()">
+          @if (dueDateFormatted()) {
+            <i class="pi pi-calendar"></i>
+            <span>{{ dueDateFormatted() }}</span>
+            @if (isOverdue()) {
+              <span class="overdue-label">Overdue</span>
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (isExpanded()) {
+      <div class="task-subtasks">
+        <div class="subtree-line"></div>
+        <div class="subtasks-list">
+          @for (sub of subtasks(); track sub.id) {
+            <app-subtask-item
+              [subtask]="sub"
+              (toggled)="onSubtaskToggle($event)"
+              (deleted)="onSubtaskDelete($event)">
+            </app-subtask-item>
+          }
+        </div>
+        <div class="add-subtask-form">
+          <input
+            type="text"
+            pInputText
+            [ngModel]="newSubtaskTitle()"
+            (ngModelChange)="newSubtaskTitle.set($event)"
+            (keyup.enter)="onAddSubtask()"
+            placeholder="Add subtask..."
+            class="add-subtask-input">
+          <p-button
+            type="button"
+            icon="pi pi-plus"
+            severity="secondary"
+            [text]="true"
+            (onClick)="onAddSubtask()"
+            [disabled]="!newSubtaskTitle().trim()"
+            pTooltip="Add subtask"
+            tooltipPosition="top">
+          </p-button>
+        </div>
+      </div>
+    }
   </div>
 </div>
