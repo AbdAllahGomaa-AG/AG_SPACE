@@ -1,0 +1,61 @@
+<div class="meal-card" [ngClass]="{ 'interactive': interactive() }">
+  <div class="card-header">
+    <div class="header-main">
+      <div class="icon-container">
+        @switch (meal().meal_type) {
+          @case ('breakfast') { <i class="pi pi-sun"></i> }
+          @case ('lunch') { <i class="pi pi-briefcase"></i> }
+          @case ('dinner') { <i class="pi pi-moon"></i> }
+          @case ('snack') { <i class="pi pi-bolt"></i> }
+          @default { <i class="pi pi-apple"></i> }
+        }
+      </div>
+      <div class="title-container">
+        <h3 class="meal-name">{{ meal().meal_name }}</h3>
+        <span class="meal-time">{{ meal().logged_at | date:'shortTime' }}</span>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      @if (meal().analysis_confidence) {
+        <app-confidence-badge [confidence]="meal().analysis_confidence!" />
+      }
+      @if (interactive()) {
+        <p-button 
+          icon="pi pi-trash" 
+          [rounded]="true" 
+          [text]="true" 
+          severity="danger" 
+          (onClick)="onDeleteClick($event)"
+          pTooltip="Delete Meal"
+          tooltipPosition="left"
+        />
+      }
+    </div>
+  </div>
+
+  <div class="card-content">
+    <div class="nutrient-summary">
+      <div class="nutrient">
+        <span class="value">{{ totalCalories | number:'1.0-0' }}</span>
+        <span class="label">kcal</span>
+      </div>
+      <div class="divider"></div>
+      <div class="nutrient">
+        <span class="value">{{ totalProtein | number:'1.0-1' }}</span>
+        <span class="label">P (g)</span>
+      </div>
+    </div>
+
+    @if (meal().items && meal().items!.length > 0) {
+      <div class="items-list">
+        @for (item of meal().items; track item.name) {
+          <div class="item">
+            <span class="item-name">{{ item.name }}</span>
+            <span class="item-calories">{{ item.calories | number:'1.0-0' }} kcal</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

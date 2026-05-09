@@ -1,0 +1,22 @@
+<div class="timeline">
+  @if (meals().length === 0) {
+    <div class="empty-state">
+      <i class="pi pi-calendar"></i>
+      <p>No meals logged for this day yet.</p>
+    </div>
+  } @else {
+    @for (meal of meals(); track meal.id; let last = $last) {
+      <div class="timeline-item">
+        <div class="timeline-marker">
+          <div class="dot"></div>
+          @if (!last) {
+            <div class="line"></div>
+          }
+        </div>
+        <div class="timeline-content">
+          <app-meal-card [meal]="meal" (delete)="onDelete($event)" />
+        </div>
+      </div>
+    }
+  }
+</div>

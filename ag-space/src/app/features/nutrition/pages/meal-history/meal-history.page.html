@@ -1,0 +1,52 @@
+<div class="page-container">
+  <header class="page-header">
+    <p-button 
+      icon="pi pi-arrow-left" 
+      [text]="true" 
+      routerLink="/nutrition" 
+      label="Back"
+    />
+    <h1>Meal History</h1>
+  </header>
+
+  <div class="history-controls card-glass">
+    <p-button icon="pi pi-chevron-left" [text]="true" (onClick)="previousDay()" />
+    <p-datepicker 
+      [(ngModel)]="selectedDate" 
+      (onSelect)="onDateChange()" 
+      dateFormat="DD, dd MM yy"
+      [showIcon]="true"
+      styleClass="history-calendar"
+    />
+    <p-button icon="pi pi-chevron-right" [text]="true" (onClick)="nextDay()" />
+  </div>
+
+  @if (facade.isLoading()) {
+    <div class="loading-state">
+      <i class="pi pi-spin pi-spinner"></i>
+      <span>Loading history...</span>
+    </div>
+  } @else {
+    <div class="history-content">
+      @if (currentDayData(); as data) {
+        <section class="summary-section">
+          <h3>Daily Totals</h3>
+          <app-nutrient-display [nutrients]="historyNutrientValues()" />
+        </section>
+
+        <section class="meals-section">
+          <h3>Meals on this day</h3>
+          <app-meal-timeline 
+            [meals]="data.meals" 
+            (deleteMeal)="onDeleteMeal($event)" 
+          />
+        </section>
+      } @else {
+        <div class="empty-history">
+          <i class="pi pi-search"></i>
+          <p>No data found for this date.</p>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -88,6 +88,32 @@ export class AuthService {
     }
   }
 
+  async updateProfile(updates: Partial<Profile>): Promise<{ success: boolean; error?: string }> {
+    try {
+      const user = this.user();
+      if (!user) throw new Error('User not authenticated');
+
+      const client = this.supabaseClient.getClient();
+      const { data, error } = await client
+        .from('profiles')
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      this.profile.set(data as Profile);
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error updating profile:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
   async signIn(email: string, password: string): Promise<{ success: boolean; error?: string }> {
     try {
       this.isLoading.set(true);

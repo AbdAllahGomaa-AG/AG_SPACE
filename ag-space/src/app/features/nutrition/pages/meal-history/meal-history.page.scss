@@ -1,0 +1,81 @@
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #60A5FA, #34D399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.history-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border-radius: 1.5rem;
+
+  ::ng-deep .history-calendar {
+    flex: 1;
+    max-width: 300px;
+    
+    .p-inputtext {
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-color);
+      cursor: pointer;
+    }
+
+    .p-button {
+      background: transparent;
+      border: none;
+      color: var(--primary-color);
+    }
+  }
+}
+
+.history-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+
+  h3 {
+    margin: 0 0 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+}
+
+.loading-state, .empty-history {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  gap: 1rem;
+  color: var(--text-color-secondary);
+
+  i { font-size: 2.5rem; }
+  p { margin: 0; font-size: 1.1rem; }
+}
+
+

@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+
+// Main application routes
 import { DashboardShellComponent } from './layout/dashboard-shell/dashboard-shell.component';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
@@ -21,6 +23,11 @@ export const routes: Routes = [
       {
         path: 'todos',
         loadChildren: () => import('./features/todo/todo.routes').then((m) => m.TODO_ROUTES),
+      },
+      {
+        path: 'nutrition',
+        loadChildren: () =>
+          import('./features/nutrition').then((m) => m.NUTRITION_ROUTES),
       },
     ],
   },

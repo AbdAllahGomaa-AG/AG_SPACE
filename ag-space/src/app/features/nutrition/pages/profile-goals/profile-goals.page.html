@@ -1,0 +1,88 @@
+<div class="page-container">
+  <p-toast />
+  
+  <header class="page-header">
+    <p-button 
+      icon="pi pi-arrow-left" 
+      [text]="true" 
+      routerLink="/nutrition" 
+      label="Back"
+    />
+    <h1>Nutrition Goals</h1>
+  </header>
+
+  <div class="goals-grid">
+    <!-- Profile Info (for calculation) -->
+    <section class="card-glass profile-section">
+      <h3>Personal Profile</h3>
+      <div class="form-grid">
+        <div class="input-group">
+          <label>Age</label>
+          <p-inputNumber [(ngModel)]="goals().age" [min]="1" [max]="120" />
+        </div>
+        <div class="input-group">
+          <label>Sex</label>
+          <p-select [options]="[{label:'Male', value:'male'}, {label:'Female', value:'female'}]" [(ngModel)]="goals().sex" />
+        </div>
+        <div class="input-group">
+          <label>Weight (kg)</label>
+          <p-inputNumber [(ngModel)]="goals().weight_kg" [min]="1" [maxFractionDigits]="1" />
+        </div>
+        <div class="input-group">
+          <label>Height (cm)</label>
+          <p-inputNumber [(ngModel)]="goals().height_cm" [min]="1" />
+        </div>
+        <div class="input-group full-width">
+          <label>Activity Level</label>
+          <p-select [options]="activityLevels" [(ngModel)]="goals().activity_level" />
+        </div>
+        <div class="input-group full-width">
+          <label>Your Goal</label>
+          <p-select [options]="goalTypes" [(ngModel)]="goals().goal_type" />
+        </div>
+      </div>
+      <p-button 
+        label="Auto-Calculate Targets" 
+        icon="pi pi-refresh" 
+        [outlined]="true" 
+        (onClick)="calculateTargets()"
+        styleClass="calc-btn"
+      />
+    </section>
+
+    <!-- Targets Section -->
+    <section class="card-glass targets-section">
+      <h3>Daily Targets</h3>
+      <div class="form-grid">
+        <div class="input-group full-width">
+          <label>Calorie Target (kcal)</label>
+          <p-inputNumber [(ngModel)]="goals().calorie_target" [min]="500" />
+        </div>
+        <div class="input-group">
+          <label>Protein (g)</label>
+          <p-inputNumber [(ngModel)]="goals().protein_target_g" [min]="0" />
+        </div>
+        <div class="input-group">
+          <label>Carbs (g)</label>
+          <p-inputNumber [(ngModel)]="goals().carbs_target_g" [min]="0" />
+        </div>
+        <div class="input-group">
+          <label>Fat (g)</label>
+          <p-inputNumber [(ngModel)]="goals().fat_target_g" [min]="0" />
+        </div>
+        <div class="input-group">
+          <label>Fiber (g)</label>
+          <p-inputNumber [(ngModel)]="goals().fiber_target_g" [min]="0" />
+        </div>
+      </div>
+      <div class="save-footer">
+        <p-button 
+          label="Save All Goals" 
+          icon="pi pi-save" 
+          (onClick)="onSave()"
+          styleClass="save-btn"
+        />
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="input-container">
+  <!-- Image Upload Section -->
+  <div class="upload-section">
+    @if (!previewUrl()) {
+      <p-fileUpload
+        mode="basic"
+        chooseLabel="Upload Photo"
+        chooseIcon="pi pi-camera"
+        accept="image/*"
+        maxFileSize="10000000"
+        (onSelect)="onFileSelect($event)"
+        [auto]="true"
+        styleClass="custom-upload"
+      />
+      <p class="upload-hint">Upload a photo for more accurate results</p>
+    } @else {
+      <div class="preview-container">
+        <img [src]="previewUrl()" alt="Meal Preview" class="preview-img" />
+        <button class="remove-btn" (click)="removeFile()" pTooltip="Remove Image">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Text Input Section -->
+  <div class="text-section">
+    <span class="p-float-label">
+      <textarea 
+        pTextarea 
+        id="meal-desc"
+        [(ngModel)]="description" 
+        rows="4" 
+        [autoResize]="true"
+        placeholder="e.g., 2 eggs with avocado toast and a coffee"
+      ></textarea>
+      <label for="meal-desc">Describe your meal...</label>
+    </span>
+  </div>
+
+  <!-- Action Section -->
+  <div class="action-section">
+    <p-button 
+      label="Analyze with AI" 
+      icon="pi pi-sparkles" 
+      [disabled]="!isValid" 
+      (onClick)="onAnalyzeClick()"
+      styleClass="analyze-btn"
+    />
+  </div>
+</div>
