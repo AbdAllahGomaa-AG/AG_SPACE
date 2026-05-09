@@ -1,0 +1,29 @@
+<div class="ring-container" [style.width.px]="radius() * 2" [style.height.px]="radius() * 2">
+  <svg [attr.height]="radius() * 2" [attr.width]="radius() * 2">
+    <!-- Background Circle -->
+    <circle
+      class="ring-background"
+      fill="transparent"
+      [attr.stroke-width]="stroke()"
+      [attr.r]="normalizedRadius()"
+      [attr.cx]="radius()"
+      [attr.cy]="radius()"
+    />
+    <!-- Progress Circle -->
+    <circle
+      class="ring-progress"
+      fill="transparent"
+      [attr.stroke-width]="stroke()"
+      [style.stroke-dasharray]="circumference() + ' ' + circumference()"
+      [style.stroke-dashoffset]="strokeDashoffset()"
+      [attr.r]="normalizedRadius()"
+      [attr.cx]="radius()"
+      [attr.cy]="radius()"
+      [style.stroke]="color()"
+    />
+  </svg>
+  
+  <div class="ring-content">
+    <ng-content></ng-content>
+  </div>
+</div>

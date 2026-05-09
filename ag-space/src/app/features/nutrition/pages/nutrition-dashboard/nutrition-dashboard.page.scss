@@ -1,0 +1,104 @@
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h1 {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #60A5FA, #34D399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    margin: 0.25rem 0 0;
+    color: var(--text-color-secondary);
+    font-size: 1.1rem;
+  }
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 2.5rem;
+  align-items: start;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2.5rem;
+  position: sticky;
+  top: 2rem;
+
+  .ring-wrapper {
+    display: flex;
+    justify-content: center;
+    
+    .ring-text {
+      .calories {
+        display: block;
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1;
+        color: var(--text-color);
+      }
+      .label {
+        font-size: 1rem;
+        color: var(--text-color-secondary);
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.timeline-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+::ng-deep .rounded-pill {
+  border-radius: 2rem !important;
+}

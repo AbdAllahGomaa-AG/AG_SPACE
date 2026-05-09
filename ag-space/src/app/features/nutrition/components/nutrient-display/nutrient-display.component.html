@@ -1,0 +1,27 @@
+<div [ngClass]="['nutrient-container', layout(), size()]">
+  @for (n of nutrients(); track n.label) {
+    <div class="nutrient-item">
+      <div class="nutrient-info">
+        <span class="label">{{ n.label }}</span>
+        <div class="value-container">
+          <span class="value">{{ n.value | number:'1.0-1' }}</span>
+          <span class="unit">{{ n.unit }}</span>
+        </div>
+      </div>
+      
+      @if (n.target) {
+        <div class="progress-bar-container">
+          <div 
+            class="progress-bar" 
+            [style.width.%]="getPercent(n)"
+            [style.background-color]="n.color || 'var(--primary-color)'"
+          ></div>
+        </div>
+        <div class="target-info">
+          <span>{{ getPercent(n) | number:'1.0-0' }}% of target</span>
+          <span class="target">{{ n.target | number:'1.0-0' }}{{ n.unit }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>

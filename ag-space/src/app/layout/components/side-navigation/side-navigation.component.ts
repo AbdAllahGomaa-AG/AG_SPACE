@@ -24,7 +24,9 @@ export class SideNavigationComponent {
   readonly closeMobileMenu = output<void>();
 
   readonly mainLinks: NavigationLink[] = [
+    { label: 'Overview', icon: 'pi pi-home', route: '/' },
     { label: 'To-dos', icon: 'pi pi-check-square', route: '/todos' },
+    { label: 'Nutrition', icon: 'pi pi-apple', route: '/nutrition' },
   ];
 
   readonly workspaceLinks: NavigationLink[] = [];

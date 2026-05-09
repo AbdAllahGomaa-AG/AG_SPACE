@@ -1,0 +1,34 @@
+<div class="page-container">
+  <p-toast />
+  
+  <header class="page-header">
+    <p-button 
+      icon="pi pi-arrow-left" 
+      [text]="true" 
+      routerLink="/nutrition" 
+      label="Back"
+    />
+    <h1>Log New Meal</h1>
+  </header>
+
+  <div class="content-card card-glass">
+    @if (isAnalyzing()) {
+      <div class="analyzing-state">
+        <p-progressSpinner styleClass="custom-spinner" strokeWidth="4" />
+        <h2>Analyzing your meal...</h2>
+        <p>Our AI is identifying ingredients and estimating nutrients.</p>
+      </div>
+    } @else {
+      <app-meal-input (analyze)="onAnalyze($event)" (manualEntry)="onManualEntry()" />
+    }
+  </div>
+
+  <section class="tips-section">
+    <h3>Pro Tips</h3>
+    <ul>
+      <li><i class="pi pi-check"></i> Photos work best for multi-ingredient meals.</li>
+      <li><i class="pi pi-check"></i> Be specific in descriptions (e.g., "large banana" instead of "banana").</li>
+      <li><i class="pi pi-check"></i> You can edit the results in the next step.</li>
+    </ul>
+  </section>
+</div>

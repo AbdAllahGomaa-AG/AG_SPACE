@@ -1,0 +1,86 @@
+.page-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #60A5FA, #34D399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.content-card {
+  padding: 3rem;
+  border-radius: 2rem;
+}
+
+.analyzing-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1rem;
+  min-height: 300px;
+
+  h2 {
+    margin: 1rem 0 0.5rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+  }
+
+  p {
+    color: var(--text-color-secondary);
+    max-width: 300px;
+  }
+}
+
+.tips-section {
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-color-secondary);
+      font-size: 0.95rem;
+
+      i {
+        color: var(--primary-color);
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+
+
+::ng-deep .custom-spinner {
+  width: 80px;
+  height: 80px;
+}

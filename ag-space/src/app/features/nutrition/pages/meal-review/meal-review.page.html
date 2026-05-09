@@ -1,0 +1,108 @@
+<div class="page-container">
+  <p-toast />
+  
+  <header class="page-header">
+    <p-button 
+      icon="pi pi-arrow-left" 
+      [text]="true" 
+      routerLink="/nutrition/add" 
+      label="Cancel"
+    />
+    <h1>Review Analysis</h1>
+  </header>
+
+  <div class="review-grid">
+    <!-- Left Column: Totals & Confidence -->
+    <aside class="summary-col">
+      <div class="card-glass summary-card">
+        <h3>Total Nutrition</h3>
+        <app-nutrient-display [nutrients]="nutrientValues()" layout="list" size="sm" />
+        
+        @if (pendingAnalysis()?.analysis_confidence) {
+          <div class="confidence-box">
+            <app-confidence-badge [confidence]="pendingAnalysis()!.analysis_confidence" />
+          </div>
+        }
+
+        @if (pendingAnalysis()?.assumptions?.length) {
+          <div class="assumptions-box">
+            <h4>AI Assumptions</h4>
+            <ul>
+              @for (a of pendingAnalysis()!.assumptions; track a) {
+                <li>{{ a }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </aside>
+
+    <!-- Right Column: Editable Items -->
+    <main class="items-col">
+      <div class="card-glass items-card">
+        <div class="meal-meta">
+          <div class="input-group">
+            <label>Meal Name</label>
+            <input type="text" pInputText [(ngModel)]="mealName" />
+          </div>
+          <div class="input-group">
+            <label>Meal Type</label>
+            <p-select [options]="mealTypes" [(ngModel)]="mealType" appendTo="body" />
+          </div>
+        </div>
+
+        <div class="items-header">
+          <h3>Line Items</h3>
+          <p-button 
+            label="Add Item" 
+            icon="pi pi-plus" 
+            [text]="true" 
+            size="small"
+            (onClick)="addItem()"
+          />
+        </div>
+
+        <div class="items-list">
+          @for (item of items(); track item; let i = $index) {
+            <div class="item-row card-glass">
+              <div class="row-main">
+                <input type="text" pInputText [(ngModel)]="item.name" placeholder="Item Name" class="item-name-input" />
+                <div class="row-actions">
+                  <p-button icon="pi pi-trash" [text]="true" severity="danger" (onClick)="removeItem(i)" />
+                </div>
+              </div>
+              <div class="row-nutrients">
+                <div class="nutrient-input">
+                  <label>Calories</label>
+                  <p-inputNumber [(ngModel)]="item.calories" [min]="0" suffix=" kcal" [showButtons]="false" />
+                </div>
+                <div class="nutrient-input">
+                  <label>Protein</label>
+                  <p-inputNumber [(ngModel)]="item.protein_g" [min]="0" suffix=" g" [maxFractionDigits]="1" />
+                </div>
+                <div class="nutrient-input">
+                  <label>Carbs</label>
+                  <p-inputNumber [(ngModel)]="item.carbs_g" [min]="0" suffix=" g" [maxFractionDigits]="1" />
+                </div>
+                <div class="nutrient-input">
+                  <label>Fat</label>
+                  <p-inputNumber [(ngModel)]="item.fat_g" [min]="0" suffix=" g" [maxFractionDigits]="1" />
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="actions-footer">
+          <p-button 
+            label="Confirm & Save Meal" 
+            icon="pi pi-check" 
+            [loading]="isLoading()" 
+            (onClick)="onSave()"
+            styleClass="save-btn"
+          />
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
