@@ -6,7 +6,7 @@
     <div class="header-content">
       <div class="header-info">
         <h1 class="page-title">{{ viewTitle() }}</h1>
-        <p class="page-description">Manage and organize your tasks with precision.</p>
+        <p class="page-description">Drag tasks between columns to update status.</p>
       </div>
       <div class="header-actions">
         <p-button 
@@ -28,28 +28,31 @@
   </app-task-filters>
 
   <!-- Error State -->
-  <div *ngIf="error()" class="error-state">
-    <i class="pi pi-exclamation-circle error-icon"></i>
-    <p class="error-message">{{ error() }}</p>
-    <p-button 
-      label="Retry" 
-      icon="pi pi-refresh"
-      severity="secondary"
-      (onClick)="loadData()">
-    </p-button>
-  </div>
+  @if (error()) {
+    <div class="error-state">
+      <i class="pi pi-exclamation-circle error-icon"></i>
+      <p class="error-message">{{ error() }}</p>
+      <p-button 
+        label="Retry" 
+        icon="pi pi-refresh"
+        severity="secondary"
+        (onClick)="loadData()">
+      </p-button>
+    </div>
+  }
 
-  <!-- Task List -->
-  <app-task-list
-    *ngIf="!error()"
-    [tasks]="tasks()"
-    [categories]="categories()"
-    [isLoading]="isLoading()"
-    (editTask)="onEditTask($event)"
-    (completeTask)="onCompleteTask($event)"
-    (reopenTask)="onReopenTask($event)"
-    (deleteTask)="onDeleteTask($event)">
-  </app-task-list>
+  <!-- Kanban Board -->
+  @if (!error()) {
+    <app-kanban-board
+      [tasks]="tasks()"
+      [categories]="categories()"
+      [isLoading]="isLoading()"
+      (editTask)="onEditTask($event)"
+      (completeTask)="onCompleteTask($event)"
+      (reopenTask)="onReopenTask($event)"
+      (deleteTask)="onDeleteTask($event)">
+    </app-kanban-board>
+  }
 
   <!-- Task Form Dialog -->
   <p-dialog
@@ -62,7 +65,6 @@
     [draggable]="false"
     [resizable]="false">
     <app-task-form
-      *ngIf="showTaskForm()"
       [categories]="categories()"
       [taskId]="editingTaskId()"
       (saved)="onCloseForm()"
