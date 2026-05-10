@@ -109,6 +109,14 @@ export class MealReviewPage implements OnInit {
     this.items.update(current => current.filter((_, i) => i !== index));
   }
 
+  updateItem(index: number, updates: Partial<MealItem>): void {
+    this.items.update(current => {
+      const updated = [...current];
+      updated[index] = { ...updated[index], ...updates };
+      return updated;
+    });
+  }
+
   async onSave(): Promise<void> {
     const success = await this.facade.saveMeal(
       {

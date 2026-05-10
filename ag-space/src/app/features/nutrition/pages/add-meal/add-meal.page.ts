@@ -75,7 +75,7 @@ export class AddMealPage {
         sugars_g: 0,
         sodium_mg: 0
       },
-      analysis_confidence: 100,
+      analysis_confidence: 1.0,
       assumptions: ['Manual Entry'],
       clarifying_question: null
     });

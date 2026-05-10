@@ -77,11 +77,11 @@ export class ProfileGoalsPage implements OnInit {
   }
 
   async onSave(): Promise<void> {
-    const success = await this.authService.updateProfile(this.goals() as any);
-    if (success) {
+    const result = await this.authService.updateProfile(this.goals() as any);
+    if (result.success) {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Nutrition goals updated' });
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update goals' });
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: result.error || 'Failed to update goals' });
     }
   }
 
