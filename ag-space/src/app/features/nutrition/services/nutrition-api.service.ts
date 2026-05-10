@@ -15,7 +15,7 @@ export class NutritionApiService {
     const client = this.supabaseClient.getClient();
     const { data, error } = await client
       .from('meals')
-      .select('*, meal_items(*)')
+      .select('*, items:meal_items(*)')
       .gte('logged_at', `${date}T00:00:00`)
       .lte('logged_at', `${date}T23:59:59`)
       .order('logged_at', { ascending: true });

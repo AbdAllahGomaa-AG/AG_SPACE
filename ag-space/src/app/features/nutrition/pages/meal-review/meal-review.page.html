@@ -43,11 +43,11 @@
         <div class="meal-meta">
           <div class="input-group">
             <label>Meal Name</label>
-            <input type="text" pInputText [(ngModel)]="mealName" />
+            <input type="text" pInputText [ngModel]="mealName()" (ngModelChange)="mealName.set($event)" />
           </div>
           <div class="input-group">
             <label>Meal Type</label>
-            <p-select [options]="mealTypes" [(ngModel)]="mealType" appendTo="body" />
+            <p-select [options]="mealTypes" [ngModel]="mealType()" (ngModelChange)="mealType.set($event)" appendTo="body" />
           </div>
         </div>
 
@@ -63,10 +63,10 @@
         </div>
 
         <div class="items-list">
-          @for (item of items(); track item; let i = $index) {
+          @for (item of items(); track i; let i = $index) {
             <div class="item-row card-glass">
               <div class="row-main">
-                <input type="text" pInputText [(ngModel)]="item.name" placeholder="Item Name" class="item-name-input" />
+                <input type="text" pInputText [ngModel]="item.name" (ngModelChange)="updateItem(i, {name: $event})" placeholder="Item Name" class="item-name-input" />
                 <div class="row-actions">
                   <p-button icon="pi pi-trash" [text]="true" severity="danger" (onClick)="removeItem(i)" />
                 </div>
@@ -74,19 +74,19 @@
               <div class="row-nutrients">
                 <div class="nutrient-input">
                   <label>Calories</label>
-                  <p-inputNumber [(ngModel)]="item.calories" [min]="0" suffix=" kcal" [showButtons]="false" />
+                  <p-inputNumber [ngModel]="item.calories" (ngModelChange)="updateItem(i, {calories: $event})" [min]="0" suffix=" kcal" [showButtons]="false" />
                 </div>
                 <div class="nutrient-input">
                   <label>Protein</label>
-                  <p-inputNumber [(ngModel)]="item.protein_g" [min]="0" suffix=" g" [maxFractionDigits]="1" />
+                  <p-inputNumber [ngModel]="item.protein_g" (ngModelChange)="updateItem(i, {protein_g: $event})" [min]="0" suffix=" g" [maxFractionDigits]="1" />
                 </div>
                 <div class="nutrient-input">
                   <label>Carbs</label>
-                  <p-inputNumber [(ngModel)]="item.carbs_g" [min]="0" suffix=" g" [maxFractionDigits]="1" />
+                  <p-inputNumber [ngModel]="item.carbs_g" (ngModelChange)="updateItem(i, {carbs_g: $event})" [min]="0" suffix=" g" [maxFractionDigits]="1" />
                 </div>
                 <div class="nutrient-input">
                   <label>Fat</label>
-                  <p-inputNumber [(ngModel)]="item.fat_g" [min]="0" suffix=" g" [maxFractionDigits]="1" />
+                  <p-inputNumber [ngModel]="item.fat_g" (ngModelChange)="updateItem(i, {fat_g: $event})" [min]="0" suffix=" g" [maxFractionDigits]="1" />
                 </div>
               </div>
             </div>
