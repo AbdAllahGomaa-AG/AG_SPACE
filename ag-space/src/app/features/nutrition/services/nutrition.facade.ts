@@ -175,17 +175,23 @@ export class NutritionFacade {
     this.setAnalyzing(true);
     this.setError(null);
     this.state.update(s => ({ ...s, pendingAnalysis: null }));
+    try {
+      const response = await this.analysis.analyzeMeal(request);
 
-    const response = await this.analysis.analyzeMeal(request);
-
-    if (response.success && response.data) {
-      this.state.update(s => ({ ...s, pendingAnalysis: response.data! }));
-      this.setAnalyzing(false);
-      return true;
-    } else {
-      this.setError(response.error || 'Failed to analyze meal');
-      this.setAnalyzing(false);
+      if (response.success && response.data) {
+        this.state.update(s => ({ ...s, pendingAnalysis: response.data! }));
+        return true;
+      } else {
+        this.setError(response.error || 'Failed to analyze meal');
+        return false;
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[NutritionFacade] analyzeMeal threw:', msg);
       return false;
+    } finally {
+      this.setAnalyzing(false);
     }
   }
 
@@ -254,36 +260,48 @@ export class NutritionFacade {
   }
 
   async recalculateDailySummary(date: string): Promise<void> {
-    const { data: meals, error } = await this.api.getMeals(date);
-    if (error || !meals) return;
+    try {
+      const { data: meals, error } = await this.api.getMeals(date);
+      if (error || !meals) {
+        console.warn('[NutritionFacade] recalculateDailySummary: no meals for', date);
+        return;
+      }
 
-    const totals = {
-      calories_total: 0,
-      protein_total_g: 0,
-      carbs_total_g: 0,
-      fat_total_g: 0,
-      fiber_total_g: 0,
-      sugars_total_g: 0,
-      sodium_total_mg: 0,
-      meal_count: meals.length,
-    };
+      const totals = {
+        calories_total: 0,
+        protein_total_g: 0,
+        carbs_total_g: 0,
+        fat_total_g: 0,
+        fiber_total_g: 0,
+        sugars_total_g: 0,
+        sodium_total_mg: 0,
+        meal_count: meals.length,
+      };
 
-    meals.forEach(meal => {
-      meal.items?.forEach(item => {
-        totals.calories_total += item.calories;
-        totals.protein_total_g += item.protein_g;
-        totals.carbs_total_g += item.carbs_g;
-        totals.fat_total_g += item.fat_g;
-        totals.fiber_total_g += item.fiber_g;
-        totals.sugars_total_g += item.sugars_g;
-        totals.sodium_total_mg += item.sodium_mg;
+      meals.forEach(meal => {
+        meal.items?.forEach(item => {
+          totals.calories_total += item.calories;
+          totals.protein_total_g += item.protein_g;
+          totals.carbs_total_g += item.carbs_g;
+          totals.fat_total_g += item.fat_g;
+          totals.fiber_total_g += item.fiber_g;
+          totals.sugars_total_g += item.sugars_g;
+          totals.sodium_total_mg += item.sodium_mg;
+        });
       });
-    });
 
-    await this.api.upsertDailySummary({
-      summary_date: date,
-      ...totals
-    });
+      const { error: upsertError } = await this.api.upsertDailySummary({
+        summary_date: date,
+        ...totals
+      });
+
+      if (upsertError) {
+        console.warn('[NutritionFacade] recalculateDailySummary: upsert failed', upsertError.message);
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('[NutritionFacade] recalculateDailySummary threw:', msg);
+    }
   }
 
   // ==================== STATE HELPERS ====================

@@ -259,107 +259,142 @@ export class TodoFacade {
   async loadCategories(): Promise<void> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const { data, error } = await this.api.getCategories();
 
-    const { data, error } = await this.api.getCategories();
-
-    if (error) {
-      this.setError(error.message);
-    } else {
-      this.state.update(s => ({ ...s, categories: data || [] }));
+      if (error) {
+        this.setError(error.message);
+      } else {
+        this.state.update(s => ({ ...s, categories: data || [] }));
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] loadCategories threw:', msg);
+    } finally {
+      this.setLoading(false);
     }
-
-    this.setLoading(false);
   }
 
   async loadTasks(): Promise<void> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const { data, error } = await this.api.getTasks();
 
-    const { data, error } = await this.api.getTasks();
-
-    if (error) {
-      this.setError(error.message);
-    } else {
-      this.state.update(s => ({ ...s, tasks: data || [] }));
+      if (error) {
+        this.setError(error.message);
+      } else {
+        this.state.update(s => ({ ...s, tasks: data || [] }));
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] loadTasks threw:', msg);
+    } finally {
+      this.setLoading(false);
     }
-
-    this.setLoading(false);
   }
 
   async loadTasksWithFilter(filter: TaskFilter): Promise<void> {
     this.setLoading(true);
     this.setError(null);
     this.state.update(s => ({ ...s, filter }));
+    try {
+      const { data, error } = await this.api.getTasksWithFilters(filter);
 
-    const { data, error } = await this.api.getTasksWithFilters(filter);
-
-    if (error) {
-      this.setError(error.message);
-    } else {
-      this.state.update(s => ({ ...s, tasks: data || [] }));
+      if (error) {
+        this.setError(error.message);
+      } else {
+        this.state.update(s => ({ ...s, tasks: data || [] }));
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] loadTasksWithFilter threw:', msg);
+    } finally {
+      this.setLoading(false);
     }
-
-    this.setLoading(false);
   }
 
   async loadTodayTasks(): Promise<void> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const { data, error } = await this.api.getTodayTasks();
 
-    const { data, error } = await this.api.getTodayTasks();
-
-    if (error) {
-      this.setError(error.message);
-    } else {
-      this.state.update(s => ({ ...s, tasks: data || [] }));
+      if (error) {
+        this.setError(error.message);
+      } else {
+        this.state.update(s => ({ ...s, tasks: data || [] }));
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] loadTodayTasks threw:', msg);
+    } finally {
+      this.setLoading(false);
     }
-
-    this.setLoading(false);
   }
 
   async loadOverdueTasks(): Promise<void> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const { data, error } = await this.api.getOverdueTasks();
 
-    const { data, error } = await this.api.getOverdueTasks();
-
-    if (error) {
-      this.setError(error.message);
-    } else {
-      this.state.update(s => ({ ...s, tasks: data || [] }));
+      if (error) {
+        this.setError(error.message);
+      } else {
+        this.state.update(s => ({ ...s, tasks: data || [] }));
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] loadOverdueTasks threw:', msg);
+    } finally {
+      this.setLoading(false);
     }
-
-    this.setLoading(false);
   }
 
   async loadUpcomingTasks(): Promise<void> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const { data, error } = await this.api.getUpcomingTasks();
 
-    const { data, error } = await this.api.getUpcomingTasks();
-
-    if (error) {
-      this.setError(error.message);
-    } else {
-      this.state.update(s => ({ ...s, tasks: data || [] }));
+      if (error) {
+        this.setError(error.message);
+      } else {
+        this.state.update(s => ({ ...s, tasks: data || [] }));
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] loadUpcomingTasks threw:', msg);
+    } finally {
+      this.setLoading(false);
     }
-
-    this.setLoading(false);
   }
 
   async loadCompletedTasks(): Promise<void> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const { data, error } = await this.api.getCompletedTasks();
 
-    const { data, error } = await this.api.getCompletedTasks();
-
-    if (error) {
-      this.setError(error.message);
-    } else {
-      this.state.update(s => ({ ...s, tasks: data || [] }));
+      if (error) {
+        this.setError(error.message);
+      } else {
+        this.state.update(s => ({ ...s, tasks: data || [] }));
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] loadCompletedTasks threw:', msg);
+    } finally {
+      this.setLoading(false);
     }
-
-    this.setLoading(false);
   }
 
   // ==================== TASK CRUD METHODS ====================
@@ -367,87 +402,101 @@ export class TodoFacade {
   async createTask(taskData: Omit<Task, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'completed_at'>): Promise<boolean> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const user = this.authService.user();
+      if (!user) {
+        this.setError('User not authenticated');
+        return false;
+      }
 
-    const user = this.authService.user();
-    if (!user) {
-      this.setError('User not authenticated');
-      this.setLoading(false);
+      const { data, error } = await this.api.createTask({
+        user_id: user.id,
+        title: taskData.title,
+        description: taskData.description ?? undefined,
+        category_id: taskData.category_id,
+        priority: taskData.priority,
+        status: taskData.status,
+        parent_id: taskData.parent_id,
+        start_date: taskData.start_date,
+        due_date: taskData.due_date,
+      });
+
+      if (error || !data) {
+        this.setError(error?.message || 'Failed to create task');
+        return false;
+      }
+
+      this.state.update(s => ({
+        ...s,
+        tasks: [data, ...s.tasks],
+      }));
+      return true;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] createTask threw:', msg);
       return false;
-    }
-
-    const { data, error } = await this.api.createTask({
-      user_id: user.id,
-      title: taskData.title,
-      description: taskData.description ?? undefined,
-      category_id: taskData.category_id,
-      priority: taskData.priority,
-      status: taskData.status,
-      parent_id: taskData.parent_id,
-      start_date: taskData.start_date,
-      due_date: taskData.due_date,
-    });
-
-    if (error || !data) {
-      this.setError(error?.message || 'Failed to create task');
+    } finally {
       this.setLoading(false);
-      return false;
     }
-
-    this.state.update(s => ({
-      ...s,
-      tasks: [data, ...s.tasks],
-    }));
-
-    this.setLoading(false);
-    return true;
   }
 
   async updateTask(taskId: string, updates: Partial<Omit<Task, 'id' | 'user_id' | 'created_at' | 'updated_at'>>): Promise<boolean> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const { data, error } = await this.api.updateTask(taskId, updates);
 
-    const { data, error } = await this.api.updateTask(taskId, updates);
+      if (error || !data) {
+        this.setError(error?.message || 'Failed to update task');
+        return false;
+      }
 
-    if (error || !data) {
-      this.setError(error?.message || 'Failed to update task');
-      this.setLoading(false);
+      this.state.update(s => ({
+        ...s,
+        tasks: s.tasks.map(t => t.id === taskId ? data : t),
+      }));
+      return true;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] updateTask threw:', msg);
       return false;
+    } finally {
+      this.setLoading(false);
     }
-
-    this.state.update(s => ({
-      ...s,
-      tasks: s.tasks.map(t => t.id === taskId ? data : t),
-    }));
-
-    this.setLoading(false);
-    return true;
   }
 
   async deleteTask(taskId: string): Promise<boolean> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const subtaskIds = this.state().tasks
+        .filter(t => t.parent_id === taskId)
+        .map(t => t.id);
 
-    const subtaskIds = this.state().tasks
-      .filter(t => t.parent_id === taskId)
-      .map(t => t.id);
+      const allIds = [taskId, ...subtaskIds];
 
-    const allIds = [taskId, ...subtaskIds];
+      const { error } = await this.api.deleteSubtasksBulk(allIds);
 
-    const { error } = await this.api.deleteSubtasksBulk(allIds);
+      if (error) {
+        this.setError(error.message);
+        return false;
+      }
 
-    if (error) {
-      this.setError(error.message);
-      this.setLoading(false);
+      this.state.update(s => ({
+        ...s,
+        tasks: s.tasks.filter(t => t.id !== taskId && !subtaskIds.includes(t.id)),
+      }));
+      return true;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] deleteTask threw:', msg);
       return false;
+    } finally {
+      this.setLoading(false);
     }
-
-    this.state.update(s => ({
-      ...s,
-      tasks: s.tasks.filter(t => t.id !== taskId && !subtaskIds.includes(t.id)),
-    }));
-
-    this.setLoading(false);
-    return true;
   }
 
   // ==================== TASK STATUS METHODS ====================
@@ -463,29 +512,33 @@ export class TodoFacade {
   async updateTaskStatus(taskId: string, status: TaskStatus): Promise<boolean> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const previousTask = this.state().tasks.find(t => t.id === taskId);
 
-    const previousTask = this.state().tasks.find(t => t.id === taskId);
+      const { data, error } = await this.api.setTaskStatus(taskId, status);
 
-    const { data, error } = await this.api.setTaskStatus(taskId, status);
+      if (error || !data) {
+        this.setError(error?.message || 'Failed to update task status');
+        return false;
+      }
 
-    if (error || !data) {
-      this.setError(error?.message || 'Failed to update task status');
-      this.setLoading(false);
+      if (status === 'done' && previousTask && previousTask.status !== 'done') {
+        this.soundService.playSuccess();
+      }
+
+      this.state.update(s => ({
+        ...s,
+        tasks: s.tasks.map(t => t.id === taskId ? data : t),
+      }));
+      return true;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] updateTaskStatus threw:', msg);
       return false;
+    } finally {
+      this.setLoading(false);
     }
-
-    // Play sound if transitioned to done
-    if (status === 'done' && previousTask && previousTask.status !== 'done') {
-      this.soundService.playSuccess();
-    }
-
-    this.state.update(s => ({
-      ...s,
-      tasks: s.tasks.map(t => t.id === taskId ? data : t),
-    }));
-
-    this.setLoading(false);
-    return true;
   }
 
   // ==================== SUBTASK METHODS ====================
@@ -517,22 +570,33 @@ export class TodoFacade {
       tasks: s.tasks.map(t => t.id === taskId ? { ...t, status: optimisticStatus } : t),
     }));
 
-    const { data, error } = await this.api.setTaskStatus(taskId, optimisticStatus);
+    try {
+      const { data, error } = await this.api.setTaskStatus(taskId, optimisticStatus);
 
-    if (error || !data) {
+      if (error || !data) {
+        this.state.update(s => ({
+          ...s,
+          tasks: s.tasks.map(t => t.id === taskId ? { ...t, status: task.status } : t),
+        }));
+        this.setError(error?.message || 'Failed to update subtask');
+        return false;
+      }
+
+      this.state.update(s => ({
+        ...s,
+        tasks: s.tasks.map(t => t.id === taskId ? data : t),
+      }));
+      return true;
+    } catch (err: unknown) {
       this.state.update(s => ({
         ...s,
         tasks: s.tasks.map(t => t.id === taskId ? { ...t, status: task.status } : t),
       }));
-      this.setError(error?.message || 'Failed to update subtask');
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] toggleSubtask threw:', msg);
       return false;
     }
-
-    this.state.update(s => ({
-      ...s,
-      tasks: s.tasks.map(t => t.id === taskId ? data : t),
-    }));
-    return true;
   }
 
   async deleteSubtask(taskId: string): Promise<boolean> {
@@ -557,7 +621,6 @@ export class TodoFacade {
   async reorderTasks(items: ReorderItem[]): Promise<boolean> {
     const previousState = this.state().tasks;
 
-    // Check if any item is transitioning to 'done'
     const hasNewDone = items.some(item => {
       if (item.status !== 'done') return false;
       const prev = previousState.find(t => t.id === item.id);
@@ -598,47 +661,56 @@ export class TodoFacade {
   async createCategory(name: string, color?: string, icon?: string): Promise<Category | null> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const { data, error } = await this.api.createCategory({ name, color, icon });
 
-    const { data, error } = await this.api.createCategory({ name, color, icon });
+      if (error || !data) {
+        this.setError(error?.message || 'Failed to create category');
+        return null;
+      }
 
-    if (error || !data) {
-      this.setError(error?.message || 'Failed to create category');
-      this.setLoading(false);
+      this.state.update(s => ({
+        ...s,
+        categories: [...s.categories, data],
+      }));
+      return data;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] createCategory threw:', msg);
       return null;
+    } finally {
+      this.setLoading(false);
     }
-
-    this.state.update(s => ({
-      ...s,
-      categories: [...s.categories, data],
-    }));
-
-    this.setLoading(false);
-    return data;
   }
 
   async deleteCategory(categoryId: string): Promise<boolean> {
     this.setLoading(true);
     this.setError(null);
+    try {
+      const { error } = await this.api.deleteCategory(categoryId);
 
-    const { error } = await this.api.deleteCategory(categoryId);
+      if (error) {
+        this.setError(error.message);
+        return false;
+      }
 
-    if (error) {
-      this.setError(error.message);
-      this.setLoading(false);
+      this.state.update(s => ({
+        ...s,
+        categories: s.categories.filter(c => c.id !== categoryId),
+        tasks: s.tasks.map(t => 
+          t.category_id === categoryId ? { ...t, category_id: null } : t
+        ),
+      }));
+      return true;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.setError(msg);
+      console.error('[TodoFacade] deleteCategory threw:', msg);
       return false;
+    } finally {
+      this.setLoading(false);
     }
-
-    // Update local state: remove category and update tasks
-    this.state.update(s => ({
-      ...s,
-      categories: s.categories.filter(c => c.id !== categoryId),
-      tasks: s.tasks.map(t => 
-        t.category_id === categoryId ? { ...t, category_id: null } : t
-      ),
-    }));
-
-    this.setLoading(false);
-    return true;
   }
 
   // ==================== FILTER & SELECTION METHODS ====================
